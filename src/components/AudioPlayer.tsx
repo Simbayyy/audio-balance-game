@@ -14,7 +14,7 @@ const AudioPlayer = () => {
   const [musicTime, setMusicTime] = useState(-1)
   const [basePitch, setBasePitch] = useState(0)
   const [baseTempo, setBaseTempo] = useState(0)
-  const [baseGrainSize, setBaseGrainSize] = useState(0)
+  const [win, setWin] = useState<'win' | 'lose' |null>(null)
 
   const [audio, setAudio] = useState<File | null>();
 
@@ -46,13 +46,12 @@ const AudioPlayer = () => {
             a.detune = (newBasePitch + pitchShift) * 100
             await Tone.loaded();
             a.toDestination();
-            a.sync().start()
             a.onstop = () => {console.log(buttonName)}
-            let newBaseGrainSize = a.toSeconds(a.grainSize)
-            setBaseGrainSize(newBaseGrainSize)
             setMusicTime(Math.floor(a.buffer.duration))
+            setWin(null)
+            a.sync().start()
             Tone.Transport.start()
-            a.grainSize = 0.95**(-newBaseTempo-tempoShift) * newBaseGrainSize
+            a.playbackRate = 0.95**(-newBaseTempo-tempoShift)
             setButtonName("Stop");
           })
       })
@@ -80,28 +79,36 @@ const AudioPlayer = () => {
         }
     }
   };
+
+  const checkWin = (a:Tone.GrainPlayer | null) => {
+    if (a && a.detune === 0 && a.playbackRate === 1) {
+      setWin("win")
+    }
+  }
+
   const handlePitchChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setPitchShift(Number(e.target.value))
-
-    if (a) a.detune = (basePitch + pitchShift) * 100
+    if (a) a.detune = (basePitch + Number(e.target.value)) * 100
   }
 
   
   const handleTempoChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setTempoShift(Number(e.target.value))
-    if (a) a.grainSize = 0.95**(-baseTempo-Number(e.target.value)) * baseGrainSize
+    if (a) a.playbackRate = 0.95**(-baseTempo-Number(e.target.value))
   }
 
   const handleStatus = () => {
+    console.log(a)
   }
 
   return (
     <div>
-      <Counter initTime={musicTime} />
+      <Counter initTime={musicTime} win={win} setWin={setWin}/>
       <div>{basePitch}{baseTempo}</div>
       <div>
         <button onClick={handleClick}>{buttonName}</button>
         <button onClick={handleStatus}>Status</button>
+        <button onClick={() => checkWin(a)}>Check</button>
         <input type="number" onChange={handlePitchChange} value={pitchShift} />
         <input type="number" onChange={handleTempoChange} value={tempoShift} />
         <input type="file" onChange={addFile} />
