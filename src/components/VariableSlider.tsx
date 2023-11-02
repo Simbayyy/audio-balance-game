@@ -22,7 +22,7 @@ export const VariableSlider: React.FunctionComponent<{
               <Flex style={{height:"2rem",width:"50rem",maxWidth:"90vw",backgroundColor:'grey',borderRadius:"1rem"}}>
                 {[...Array(maxValue)]
                   .map((_, index) => {
-                    return <Segment index={index - maxValue/2} value={stateVariable} setValue={setFunction} side={index == 0 ? "first" : index == maxValue - 1 ? "last" : "middle"}/>
+                    return <Segment key={index} index={index - maxValue/2} value={stateVariable} setValue={setFunction} side={index == 0 ? "first" : index == maxValue - 1 ? "last" : "middle"}/>
                           }
                         )
                 }
