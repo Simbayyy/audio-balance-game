@@ -5,7 +5,7 @@ import { useEffect } from "react"
 export const Segment: React.FunctionComponent<{
     index:number,
     value:number,
-    setValue:React.Dispatch<React.SetStateAction<number>>
+    setValue:React.Dispatch<React.SetStateAction<number>> | null
     side:string
 }> = ({index,value,setValue,side}) => {
     let color = (value > index ? "orange" : "transparent")
@@ -20,10 +20,10 @@ export const Segment: React.FunctionComponent<{
                 <Box 
                 grow={'1'}
                 key={2*index+2} 
-                onClick={() => {setValue(index)}} />
+                onClick={() => {if (setValue) setValue(index)}} />
                 <Box 
                 grow={"1"}
                 key={2*index + 3} 
-                onClick={() => {setValue(index+1)}}/>
+                onClick={() => {if (setValue) setValue(index+1)}}/>
             </Flex>
     }
