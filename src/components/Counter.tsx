@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Text } from "@radix-ui/themes"
 
 export const Counter: React.FunctionComponent<
     {
@@ -20,11 +21,11 @@ export const Counter: React.FunctionComponent<
         return () => clearInterval(interval);
     }, [time])
     
-    return <div>
+    return <Text size={"8"} weight={"bold"}>
              {win 
                 ? win === 'lose' 
                     ? "Perdu"
                     : "Gagné"
-                : time}
-        </div>
+                : time > 0 && time}
+        </Text>
 }
