@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 // @ts-ignore
-import * as Tone from 'tone'
+import { GrainPlayer, Transport, loaded, start } from 'tone'
 import { Counter } from "./Counter";
 import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { VariableSlider } from "./VariableSlider";
@@ -9,7 +9,7 @@ import { HowToPlay } from "./HowToPlay";
 const AudioContext = window.AudioContext;
 const audioContext = new AudioContext();
 
-let a : Tone.GrainPlayer | null ;
+let a : GrainPlayer | null ;
 const AudioPlayer = () => {
   const [buttonName, setButtonName] = useState("Play");
   const [pitchShift, setPitchShift] = useState(0);
@@ -24,7 +24,7 @@ const AudioPlayer = () => {
 
 
   useEffect(() => {
-    Tone.start();
+    start();
   }, [])
 
   useEffect(() => {
@@ -53,9 +53,9 @@ const AudioPlayer = () => {
             let newBaseTempo = Math.floor(Math.random() * 11 - 5) 
             setBaseTempo(newBaseTempo)
             if (a) a.dispose()
-            a = new Tone.GrainPlayer({url:data})
+            a = new GrainPlayer({url:data})
             a.detune = (newBasePitch + pitchShift) * 100
-            await Tone.loaded();
+            await loaded();
             a.toDestination();
             a.loopEnd = a.buffer.duration
             a.loopStart = 0
@@ -66,7 +66,7 @@ const AudioPlayer = () => {
             setTitle(`En écoute : ${audio.name}`)
             setAttempts(0)
             a.sync().start()
-            Tone.Transport.start()
+            Transport.start()
             a.playbackRate = 0.95**(-newBaseTempo-tempoShift)
             setButtonName("Pause");
           })
@@ -79,11 +79,11 @@ const AudioPlayer = () => {
   const handleClick = () => {
     if (a) {
         if (buttonName === "Play") {
-          Tone.Transport.start()
+          Transport.start()
           console.log("Lancement de l'audio")
           setButtonName("Pause");
         } else {
-          Tone.Transport.pause()
+          Transport.pause()
           setButtonName("Play");
         }
     }
@@ -111,7 +111,7 @@ const AudioPlayer = () => {
     }
   };
 
-  const checkWin = (a:Tone.GrainPlayer | null) => {
+  const checkWin = (a:GrainPlayer | null) => {
     if (win === null) {
       if (a && a.detune === 0 && a.playbackRate === 1) {
         setWin("win")
