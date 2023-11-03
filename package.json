@@ -8,7 +8,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "node dist/server.cjs",
-    "deploy": "npm build && tsc src/server/*.ts --noEmit false && mv src/server/server.js dist/server.cjs && npm start"
+    "deploy": "npm run build && tsc src/server/*.ts --noEmit false && mv src/server/server.js dist/server.cjs && npm start"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
