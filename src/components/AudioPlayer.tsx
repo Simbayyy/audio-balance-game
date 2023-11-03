@@ -6,6 +6,7 @@ import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { VariableSlider } from "./VariableSlider";
 import { HowToPlay } from "./HowToPlay";
 import { Playlist } from "./Playlist";
+import { FreeMusic } from "./FreeMusic";
 
 const AudioContext = window.AudioContext;
 const audioContext = new AudioContext();
@@ -206,9 +207,10 @@ const AudioPlayer = () => {
               <label rel="audioFileInput">Ajouter à la playlist</label>
           </Box>} 
         </Flex>
-        <Flex>
+        <Flex gap={"2"}>
           <HowToPlay />
           {audio && <Playlist audio={audio} audioFiles={audioFiles}/>}
+          <FreeMusic setAudioFiles={setAudioFiles} audioFiles={audioFiles} setAudio={setAudio}/>
         </Flex>
       </Flex>
     </Flex>
