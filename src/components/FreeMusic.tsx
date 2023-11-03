@@ -74,7 +74,7 @@ export const FreeMusic:React.FunctionComponent<{
         <Dialog.Trigger>
             <Button>Musiques libres</Button>
         </Dialog.Trigger>
-        <Dialog.Content style={{ maxWidth: 450 }}>
+        <Dialog.Content style={{ maxWidth: 450, maxHeight:"80vh" }}>
             <Dialog.Title align={"center"}>Musiques libres</Dialog.Title>
             <ToggleGroup.Root
               className="ToggleGroup"

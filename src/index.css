@@ -124,6 +124,7 @@ button:focus-visible {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  padding-bottom: 0.8rem;
 }
 
 .ToggleGroupItem {
