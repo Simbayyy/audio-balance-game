@@ -23,6 +23,10 @@ export const FreeMusic:React.FunctionComponent<{
             <Dialog.Title align={"center"}>Musiques libres</Dialog.Title>
                 {[internationale,hall,gymno1,aquarium,toccata,ritz]
                 .map((elt,index) => { 
+                    let cleanName = elt
+                                        .replace(/.*\//,"")
+                                        .replace(/.mp3/,"")
+                                        .replace(/-[\w\d]+$/, "")
                     return <Flex 
                               key={index} 
                               style={{
@@ -31,7 +35,7 @@ export const FreeMusic:React.FunctionComponent<{
                               }} 
                               gap={"3"} 
                               align={"center"}>
-                    <Text style={{width:"50%"}} size={"4"}>{elt.replace(/.*\//,"").replace(/.mp3/,"")}</Text>
+                    <Text style={{width:"50%"}} size={"4"}>{cleanName}</Text>
                     <Flex direction={"column"} gap={"1"}>
                         <Button
                         size={"2"} 
@@ -39,7 +43,7 @@ export const FreeMusic:React.FunctionComponent<{
                             fetch(elt)
                                 .then((data) => {return data.blob()})
                                 .then((blob) => {
-                                    var file = new File([blob], elt.replace(/.*\//,"").replace(/.mp3/,""))
+                                    var file = new File([blob], cleanName)
                                     setAudio(file)
                                 })
                         }}>
@@ -51,7 +55,7 @@ export const FreeMusic:React.FunctionComponent<{
                             fetch(elt)
                                 .then((data) => {return data.blob()})
                                 .then((blob) => {
-                                    var file = new File([blob], elt.replace(/.*\//,"").replace(/.mp3/,""))
+                                    var file = new File([blob], cleanName)
                                     setAudioFiles([file,...audioFiles])
                                 })
                         }}>
@@ -63,7 +67,7 @@ export const FreeMusic:React.FunctionComponent<{
                             fetch(elt)
                                 .then((data) => {return data.blob()})
                                 .then((blob) => {
-                                    var file = new File([blob], elt.replace(/.*\//,"").replace(/.mp3/,""))
+                                    var file = new File([blob], cleanName)
                                     setAudioFiles([...audioFiles,file])
                                 })
                         }}>
@@ -77,7 +81,7 @@ export const FreeMusic:React.FunctionComponent<{
                       </HoverCard.Trigger>
                       <HoverCard.Content>
                         <Flex gap="0" align={"center"} direction={"column"}>
-                            <Text>{`"${elt.replace(/.*\//,"").replace(/.mp3/,"")}" Kevin MacLeod`}</Text>
+                            <Text>{`"${cleanName}" Kevin MacLeod`}</Text>
                             <Text>{`(incompetech.com)`}</Text>
                             <Text>{`Licensed under Creative Commons: By Attribution 4.0 License`}</Text>
                             <Text>{`http://creativecommons.org/licenses/by/4.0/`}</Text>

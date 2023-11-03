@@ -5,10 +5,12 @@ import '@radix-ui/themes/styles.css';
 import AudioPlayer from './components/AudioPlayer.tsx'
 import { Theme } from '@radix-ui/themes';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <Theme>
-      <AudioPlayer />
-    </Theme>
-  </React.StrictMode>,
-)
+window.addEventListener("DOMContentLoaded", function () {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <Theme>
+        <AudioPlayer />
+      </Theme>
+    </React.StrictMode>,
+  )
+  })
