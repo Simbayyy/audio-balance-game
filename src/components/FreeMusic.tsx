@@ -1,11 +1,17 @@
 import { Button, Dialog, Flex, HoverCard, Text } from "@radix-ui/themes"
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
+import React, {useState} from "react"
+
 import hall from '../assets/kevinmcleod/Hall of the Mountain King.mp3'
 import gymno1 from '../assets/kevinmcleod/Gymnopedie No 1.mp3'
 import aquarium from '../assets/kevinmcleod/Aquarium.mp3'
 import toccata from '../assets/kevinmcleod/Toccata and Fugue in D Minor.mp3'
+import duck from '../assets/kevinmcleod/Fluffing a Duck.mp3'
+import snitch from '../assets/kevinmcleod/Sneaky Snitch.mp3'
+import monkeys from '../assets/kevinmcleod/Monkeys Spinning Monkeys.mp3'
+import macabre from '../assets/kevinmcleod/Danse Macabre.mp3'
 import ritz from '../assets/Puttin on the Ritz.mp3' 
 import internationale from "../assets/L'Internationale.mp3" 
-import React from "react"
 
 export const FreeMusic:React.FunctionComponent<{
     setAudioFiles:React.Dispatch<React.SetStateAction<File[]>>,
@@ -18,6 +24,10 @@ export const FreeMusic:React.FunctionComponent<{
     audioFiles,
     win,
 }) => {
+    type Genre = "jazz"|"meme"|"trad"|"classical"
+    const allGenres = ["jazz","meme","trad","classical"]
+    const [filters, setFilters] = useState<Genre[]>(allGenres as Genre[])
+
     const AddButton: React.FunctionComponent<{
         elt:string,
         stuffToDo:(file:File) => void,
@@ -53,13 +63,43 @@ export const FreeMusic:React.FunctionComponent<{
         </Dialog.Close> 
     }
 
+    let musicObject = {
+        "jazz":[ritz],
+        "meme":[monkeys,duck,snitch],
+        "trad":[internationale],
+        "classical":[toccata,gymno1,hall,macabre,aquarium],
+    }
+
     return <Dialog.Root>
         <Dialog.Trigger>
             <Button>Musiques libres</Button>
         </Dialog.Trigger>
         <Dialog.Content style={{ maxWidth: 450 }}>
             <Dialog.Title align={"center"}>Musiques libres</Dialog.Title>
-                {[internationale,hall,gymno1,aquarium,toccata,ritz]
+            <ToggleGroup.Root
+              className="ToggleGroup"
+              type="multiple"
+              defaultValue={["jazz","meme","trad","classical"]}
+              onValueChange={(value) => {setFilters(value as Genre[])}}
+              aria-label="Text alignment"
+            >
+                <ToggleGroup.Item className="ToggleGroupItem" value="classical" aria-label="Musique classique">
+                    <Text>Classique</Text>
+                </ToggleGroup.Item>
+                <ToggleGroup.Item className="ToggleGroupItem" value="jazz" aria-label="Jazz">
+                    <Text>Jazz</Text>
+                </ToggleGroup.Item>
+                <ToggleGroup.Item className="ToggleGroupItem" value="meme" aria-label="Musique de meme">
+                    <Text>Meme</Text>
+                </ToggleGroup.Item>
+                <ToggleGroup.Item className="ToggleGroupItem" value="trad" aria-label="Musique traditionnelle">
+                    <Text>Traditionnelle</Text>
+                </ToggleGroup.Item>
+            </ToggleGroup.Root>
+
+                {filters
+                .map((elt) => {return musicObject[elt]})
+                .flat()
                 .map((elt,index) => { 
                     let cleanName = elt
                                         .replace(/.*\//,"")
