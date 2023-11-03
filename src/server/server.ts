@@ -10,7 +10,7 @@ const port = process.env.PORT || 4000
 
 app.use(express.json())
 // Serve static assets from the assets directory
-app.use(express.static(path.resolve(__dirname, 'assets')));
+app.use(express.static(path.resolve(__dirname)));
 
 console.log(path.basename(__dirname))
 app.get('/', (_:any, res:any) => {
