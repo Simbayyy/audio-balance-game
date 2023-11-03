@@ -11,10 +11,12 @@ export const FreeMusic:React.FunctionComponent<{
     setAudioFiles:React.Dispatch<React.SetStateAction<File[]>>,
     setAudio:React.Dispatch<React.SetStateAction<File | null | undefined>>,
     audioFiles:File[],
+    win:'win' | 'lose' | null
 }> = ({
     setAudio,
     setAudioFiles,
     audioFiles,
+    win,
 }) => {
     const AddButton: React.FunctionComponent<{
         elt:string,
@@ -79,12 +81,28 @@ export const FreeMusic:React.FunctionComponent<{
                             elt={elt} 
                             />
                         <AddButton 
-                            stuffToDo={(file) => setAudioFiles([file,...audioFiles])} 
+                            stuffToDo={(file) => {
+                                let newAudioFiles = [file,...audioFiles]
+                                if (win !== null) {
+                                    setAudio(newAudioFiles.shift())
+                                    setAudioFiles(newAudioFiles) 
+                                } else {
+                                    setAudioFiles(newAudioFiles)
+                                }
+                            }} 
                             text="Jouer après"
                             elt={elt} 
                             />
                         <AddButton 
-                            stuffToDo={(file) => setAudioFiles([...audioFiles,file])} 
+                            stuffToDo={(file) => {
+                                let newAudioFiles = [...audioFiles,file]
+                                if (win !== null) {
+                                    setAudio(newAudioFiles.shift())
+                                    setAudioFiles(newAudioFiles) 
+                                } else {
+                                    setAudioFiles(newAudioFiles)
+                                }
+                            }} 
                             text="Ajouter à la playlist"
                             elt={elt} 
                             />                    

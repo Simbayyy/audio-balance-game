@@ -69,11 +69,11 @@ export const VariableSlider: React.FunctionComponent<{
         <Text align={"center"} size={"5"} weight={"medium"}>{name}</Text>
         <Flex align={"center"} gap={"3"} wrap={"nowrap"} direction={{initial:"column",sm:"row"}} px={"1"}>
               {isDesktop 
-              ? [<SideButtons text={leftText} side='left' />,
-              <SliderBar />,
-              <SideButtons text={rightText} side='right' />]
-              : [<SliderBar />,
-              <Flex direction={"row"} gap={"5"}>
+              ? [<SideButtons key={0} text={leftText} side='left' />,
+              <SliderBar key={1} />,
+              <SideButtons key={2} text={rightText} side='right' />]
+              : [<SliderBar key={0} />,
+              <Flex key={1} direction={"row"} gap={"5"}>
                  <SideButtons text={null} side='left' />
                  <SideButtons text={null} side='right' />
               </Flex>

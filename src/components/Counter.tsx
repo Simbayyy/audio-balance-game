@@ -6,8 +6,9 @@ export const Counter: React.FunctionComponent<
         initTime:number
         win:"win" | "lose" | null
         setWin:React.Dispatch<React.SetStateAction<"win" | "lose" | null>>
-    }> = ({initTime,win,setWin}) => {
-    const [time, setTime] = useState(initTime)
+        time:number
+        setTime:React.Dispatch<React.SetStateAction<number>>
+    }> = ({initTime,win,setWin,time,setTime}) => {
 
     useEffect(() => {
         setTime(initTime)

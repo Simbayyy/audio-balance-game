@@ -24,6 +24,8 @@ const AudioPlayer = () => {
   const [title, setTitle] = useState("Bienvenue ! Lance un fichier son pour commencer")
   const [audio, setAudio] = useState<File | null>();
   const [audioFiles, setAudioFiles] = useState<File[]>([])
+  const [time, setTime] = useState(-1)
+  const [score, setScore] = useState(0)
 
   useEffect(() => {
     start();
@@ -67,6 +69,7 @@ const AudioPlayer = () => {
             setWin(null)
             setTitle(`En écoute : ${audio.name}`)
             setAttempts(0)
+            setScore(0)
             a.sync().start()
             Transport.start()
             a.playbackRate = 0.95**(-newBaseTempo-tempoShift)
@@ -112,7 +115,6 @@ const AudioPlayer = () => {
     if (audioFiles.length !== 0) {
       let newAudioFiles = audioFiles
       setAudio(newAudioFiles.shift())
-      console.log(newAudioFiles)
       setAudioFiles(newAudioFiles) 
     }
   }
@@ -133,6 +135,7 @@ const AudioPlayer = () => {
       let filesToAdd = [...e.target.files]
         if (filesToAdd.length !== 0) {
           setAudioFiles(filesToAdd.concat(audioFiles))
+          if (win !== null) nextSong()
         }
     }
   };
@@ -142,6 +145,7 @@ const AudioPlayer = () => {
       let filesToAdd = [...e.target.files]
         if (filesToAdd.length !== 0) {
           setAudioFiles(audioFiles.concat(filesToAdd))
+          if (win !== null) nextSong()
         }
     }
   };
@@ -150,6 +154,8 @@ const AudioPlayer = () => {
     if (win === null) {
       if (a && a.detune === 0 && a.playbackRate === 1) {
         setWin("win")
+        console.log({attempts:attempts,time:time})
+        setScore(Math.floor(time/(attempts*2+3)*10) + 10)
       } else {
         setAttempts(attempts + 1)
       }
@@ -167,7 +173,8 @@ const AudioPlayer = () => {
   return (
     <Flex py={"6"} direction={"column"} align={"center"} gap={"6"}>
       <Text align={"center"} weight={"bold"}>{title}</Text>
-      <Counter initTime={musicTime} win={win} setWin={setWin}/>
+      <Counter initTime={musicTime} win={win} setWin={setWin} time={time} setTime={setTime}/>
+      {win !== null && <Text size={"6"}>Score : {score}</Text>}
       <Flex gap={"4"} px={"2"} align={"center"}>
         <Button className={win === null ? "" : "button_to_disable_on_win"} onClick={() => checkWin(a)}>Vérifier la réponse</Button>
         {attempts !== 0 && <Text align={"center"}>{`Essaye encore ! Déjà ${attempts} essai${attempts != 1 ? 's' :""}`}</Text>}
@@ -210,7 +217,7 @@ const AudioPlayer = () => {
         <Flex gap={"2"} direction={{initial:"column",sm:"row"}} align={"center"}>
           <HowToPlay />
           {audio && <Playlist audio={audio} audioFiles={audioFiles}/>}
-          <FreeMusic setAudioFiles={setAudioFiles} audioFiles={audioFiles} setAudio={setAudio}/>
+          <FreeMusic setAudioFiles={setAudioFiles} audioFiles={audioFiles} setAudio={setAudio} win={win}/>
         </Flex>
       </Flex>
     </Flex>
