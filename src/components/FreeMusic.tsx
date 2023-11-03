@@ -5,6 +5,7 @@ import aquarium from '../assets/kevinmcleod/Aquarium.mp3'
 import toccata from '../assets/kevinmcleod/Toccata and Fugue in D Minor.mp3'
 import ritz from '../assets/Puttin on the Ritz.mp3' 
 import internationale from "../assets/L'Internationale.mp3" 
+import React from "react"
 
 export const FreeMusic:React.FunctionComponent<{
     setAudioFiles:React.Dispatch<React.SetStateAction<File[]>>,
@@ -15,6 +16,37 @@ export const FreeMusic:React.FunctionComponent<{
     setAudioFiles,
     audioFiles,
 }) => {
+    const AddButton: React.FunctionComponent<{
+        elt:string,
+        stuffToDo:(file:File) => void,
+        text:string
+    }> = ({
+        elt,
+        stuffToDo,
+        text
+    }) => {
+        let cleanName = elt
+            .replace(/.*\//,"")
+            .replace(/.mp3/,"")
+            .replace(/-[\w\d]+$/, "")
+
+        return <Dialog.Close>
+            <Button
+                size={"2"}
+                style={{height:"fit-content",minHeight:"4rem",textAlign:"center"}} 
+                onClick={() => {
+                    fetch(elt)
+                        .then((data) => {return data.blob()})
+                        .then((blob) => {
+                            var file = new File([blob], cleanName)
+                            stuffToDo(file)
+                        })
+                }}>
+                    {text}
+            </Button>
+        </Dialog.Close> 
+    }
+
     return <Dialog.Root>
         <Dialog.Trigger>
             <Button>Musiques libres</Button>
@@ -37,42 +69,21 @@ export const FreeMusic:React.FunctionComponent<{
                               align={"center"}>
                     <Text style={{width:"50%"}} size={"4"}>{cleanName}</Text>
                     <Flex direction={"column"} gap={"1"}>
-                        <Button
-                        size={"2"} 
-                        onClick={() => {
-                            fetch(elt)
-                                .then((data) => {return data.blob()})
-                                .then((blob) => {
-                                    var file = new File([blob], cleanName)
-                                    setAudio(file)
-                                })
-                        }}>
-                            Jouer maintenant
-                        </Button>
-                        <Button 
-                        size={"2"} 
-                        onClick={() => {
-                            fetch(elt)
-                                .then((data) => {return data.blob()})
-                                .then((blob) => {
-                                    var file = new File([blob], cleanName)
-                                    setAudioFiles([file,...audioFiles])
-                                })
-                        }}>
-                            Jouer après
-                        </Button>
-                        <Button 
-                        size={"2"} 
-                        onClick={() => {
-                            fetch(elt)
-                                .then((data) => {return data.blob()})
-                                .then((blob) => {
-                                    var file = new File([blob], cleanName)
-                                    setAudioFiles([...audioFiles,file])
-                                })
-                        }}>
-                            Ajouter à la playlist
-                        </Button>
+                        <AddButton 
+                            stuffToDo={(file) => setAudio(file)} 
+                            text="Jouer maintenant"
+                            elt={elt} 
+                            />
+                        <AddButton 
+                            stuffToDo={(file) => setAudioFiles([file,...audioFiles])} 
+                            text="Jouer après"
+                            elt={elt} 
+                            />
+                        <AddButton 
+                            stuffToDo={(file) => setAudioFiles([...audioFiles,file])} 
+                            text="Ajouter à la playlist"
+                            elt={elt} 
+                            />                    
                     </Flex>
                     {elt.match(/kevinmcleod/) &&  
                       <HoverCard.Root>

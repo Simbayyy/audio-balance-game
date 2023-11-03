@@ -165,20 +165,20 @@ const AudioPlayer = () => {
   }, [tempoShift])
 
   return (
-    <Flex direction={"column"} align={"center"} gap={"6"}>
+    <Flex py={"6"} direction={"column"} align={"center"} gap={"6"}>
       <Text align={"center"} weight={"bold"}>{title}</Text>
       <Counter initTime={musicTime} win={win} setWin={setWin}/>
-      <Flex gap={"4"} style={{padding:"0 2rem"}} align={"center"}>
+      <Flex gap={"4"} px={"2"} align={"center"}>
         <Button className={win === null ? "" : "button_to_disable_on_win"} onClick={() => checkWin(a)}>Vérifier la réponse</Button>
-        {attempts !== 0 && <Text>{`Essaye encore ! Déjà ${attempts} essai${attempts != 1 ? 's' :""}`}</Text>}
+        {attempts !== 0 && <Text align={"center"}>{`Essaye encore ! Déjà ${attempts} essai${attempts != 1 ? 's' :""}`}</Text>}
       </Flex>
       <Flex direction={"column"} gap={"4"}>
-        <VariableSlider maxValue={10} stateVariable={pitchShift} setFunction={win === null ? setPitchShift : null} rightText="Plus aigu" leftText="Plus grave" />
-        <VariableSlider maxValue={10} stateVariable={tempoShift} setFunction={win === null ? setTempoShift : null} rightText="Plus rapide" leftText="Plus lent"/>
+        <VariableSlider name={"Ton"} maxValue={10} stateVariable={pitchShift} setFunction={win === null ? setPitchShift : null} rightText="Plus aigu" leftText="Plus grave" />
+        <VariableSlider name={"Tempo"} maxValue={10} stateVariable={tempoShift} setFunction={win === null ? setTempoShift : null} rightText="Plus rapide" leftText="Plus lent"/>
       </Flex>
       <Flex gap={"2"} align={"center"} direction={"column"}>
         {a && <Button className={win === null ? "" : "button_to_disable_on_win"} size={"2"} onClick={handleClick}>{buttonName}</Button>}
-        <Flex gap={"2"} direction={{initial:"column",md:"row"}}>  
+        <Flex gap={"2"} direction={{initial:"column",md:"row"}} align={"center"}>  
           <Box className="custom-audio-upload">
             <input 
               type="file" 
@@ -207,7 +207,7 @@ const AudioPlayer = () => {
               <label rel="audioFileInput">Ajouter à la playlist</label>
           </Box>} 
         </Flex>
-        <Flex gap={"2"}>
+        <Flex gap={"2"} direction={{initial:"column",md:"row"}} align={"center"}>
           <HowToPlay />
           {audio && <Playlist audio={audio} audioFiles={audioFiles}/>}
           <FreeMusic setAudioFiles={setAudioFiles} audioFiles={audioFiles} setAudio={setAudio}/>
