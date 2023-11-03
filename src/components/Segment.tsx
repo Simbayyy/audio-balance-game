@@ -16,7 +16,13 @@ export const Segment: React.FunctionComponent<{
     return <Flex 
                 key={index+1} 
                 grow={"1"} 
-                style={{borderLeft:(side == "first" ? "" : "0.1rem solid black"),backgroundColor:color,borderTopLeftRadius:`${side == "first" ? "1" : "0"}rem`,borderBottomLeftRadius:`${side == "first" ? "1" : "0"}rem`,borderTopRightRadius:`${side == "last" ? "1" : "0"}rem`,borderBottomRightRadius:`${side == "last" ? "1" : "0"}rem`}}>
+                style={{
+                    borderLeft:(side == "first" ? "" : "0.1rem solid black"),
+                    backgroundColor:color,
+                    borderTopLeftRadius:`${side == "first" ? "1" : "0"}rem`,
+                    borderBottomLeftRadius:`${side == "first" ? "1" : "0"}rem`,
+                    borderTopRightRadius:`${side == "last" ? "1" : "0"}rem`,
+                    borderBottomRightRadius:`${side == "last" ? "1" : "0"}rem`}}>
                 <Box 
                 grow={'1'}
                 key={2*index+2} 

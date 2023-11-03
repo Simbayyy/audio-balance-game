@@ -28,14 +28,14 @@ export const VariableSlider: React.FunctionComponent<{
   
   const SideButtons: React.FunctionComponent<{text:string | null,side:'left' | 'right'}> = ({text,side}) => {
       if (side === 'left') {
-        return <Flex gap="3" justify={{initial:"start",md:"center"}} width={{initial:"100%",md:"auto"}}>
+        return <Flex gap="3" justify={{initial:"start",sm:"center"}} width={{initial:"100%",sm:"auto"}}>
           {text && <Text align={"right"} style={{width:"12rem"}}>{text}</Text>}
           <CrementButton value={-2} />
           <CrementButton value={-1} />
         </Flex>
       }
       else {
-        return <Flex gap="3" justify={{initial:"start",md:"center"}} width={{initial:"100%",md:"auto"}}>
+        return <Flex gap="3" justify={{initial:"start",sm:"center"}} width={{initial:"100%",sm:"auto"}}>
           <CrementButton value={1} />
           <CrementButton value={2} />
           {text && <Text align={"left"} style={{width:"12rem"}}>{text}</Text>}
@@ -45,7 +45,14 @@ export const VariableSlider: React.FunctionComponent<{
   }
 
   const SliderBar: React.FunctionComponent = () => {
-      return <Flex style={{height:"2rem",width:"50rem",maxWidth:"90vw",backgroundColor:'grey',borderRadius:"1rem"}}>
+      return <Flex 
+                style={{
+                  height:"2rem",
+                  width:"50rem",
+                  maxWidth:"90vw",
+                  backgroundColor:'grey',
+                  borderRadius:"1rem"
+                }}>
         {[...Array(maxValue)]
           .map((_, index) => {
             return <Segment key={index} index={index - maxValue/2} value={stateVariable} setValue={setFunction} side={index == 0 ? "first" : index == maxValue - 1 ? "last" : "middle"}/>
@@ -56,11 +63,11 @@ export const VariableSlider: React.FunctionComponent<{
   }
 
   const isDesktop = useMediaQuery({
-    query: '(min-width:520px)'
+    query: '(min-width:768px)'
   })
     return <Flex direction={"column"} gap={"1"}>
-        {isDesktop || <Text align={"center"} size={"5"} weight={"medium"}>{name}</Text>}
-        <Flex align={"center"} gap={"3"} direction={{initial:"column",md:"row"}} style={{padding:"0 1rem"}}>
+        <Text align={"center"} size={"5"} weight={"medium"}>{name}</Text>
+        <Flex align={"center"} gap={"3"} wrap={"nowrap"} direction={{initial:"column",sm:"row"}} px={"1"}>
               {isDesktop 
               ? [<SideButtons text={leftText} side='left' />,
               <SliderBar />,

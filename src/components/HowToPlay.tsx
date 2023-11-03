@@ -7,7 +7,7 @@ export const HowToPlay = () => {
         </Dialog.Trigger>
         <Dialog.Content style={{ maxWidth: 450 }}>
             <Dialog.Title>Comment jouer ?</Dialog.Title>
-            <Flex direction={"column"} style={{padding:"1rem 0"}}>
+            <Flex direction={"column"} py={"1"}>
             <Text>
                 Pour jouer, envoie le fichier d'une musique (ou choisis parmis les quelques musiques libres de droit disponibles). Le site va modifier le tempo et le ton du morceau, et tu devras essayer de retrouver le son original en jouant avec les paramètres.
             </Text>

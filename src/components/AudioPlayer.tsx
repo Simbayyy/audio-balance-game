@@ -178,7 +178,7 @@ const AudioPlayer = () => {
       </Flex>
       <Flex gap={"2"} align={"center"} direction={"column"}>
         {a && <Button className={win === null ? "" : "button_to_disable_on_win"} size={"2"} onClick={handleClick}>{buttonName}</Button>}
-        <Flex gap={"2"} direction={{initial:"column",md:"row"}} align={"center"}>  
+        <Flex gap={"2"} direction={{initial:"column",sm:"row"}} align={"center"}>  
           <Box className="custom-audio-upload">
             <input 
               type="file" 
@@ -207,7 +207,7 @@ const AudioPlayer = () => {
               <label rel="audioFileInput">Ajouter à la playlist</label>
           </Box>} 
         </Flex>
-        <Flex gap={"2"} direction={{initial:"column",md:"row"}} align={"center"}>
+        <Flex gap={"2"} direction={{initial:"column",sm:"row"}} align={"center"}>
           <HowToPlay />
           {audio && <Playlist audio={audio} audioFiles={audioFiles}/>}
           <FreeMusic setAudioFiles={setAudioFiles} audioFiles={audioFiles} setAudio={setAudio}/>

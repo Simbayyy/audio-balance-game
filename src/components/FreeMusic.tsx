@@ -33,7 +33,11 @@ export const FreeMusic:React.FunctionComponent<{
         return <Dialog.Close>
             <Button
                 size={"2"}
-                style={{height:"fit-content",minHeight:"4rem",textAlign:"center"}} 
+                style={{
+                    height:"fit-content",
+                    minHeight:"4rem",
+                    textAlign:"center"
+                }} 
                 onClick={() => {
                     fetch(elt)
                         .then((data) => {return data.blob()})
@@ -60,9 +64,9 @@ export const FreeMusic:React.FunctionComponent<{
                                         .replace(/.mp3/,"")
                                         .replace(/-[\w\d]+$/, "")
                     return <Flex 
-                              key={index} 
+                              key={index}
+                              py={"2"}
                               style={{
-                                padding:"1rem 0", 
                                 borderTop:"0.1rem solid grey"
                               }} 
                               gap={"3"} 
