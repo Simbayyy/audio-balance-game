@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Text } from "@radix-ui/themes"
 
 export const Counter: React.FunctionComponent<
