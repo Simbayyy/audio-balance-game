@@ -2,8 +2,19 @@ import * as express from 'express'
 import * as path from 'path'
 import * as dotenv from 'dotenv'
 import * as winston from 'winston'
+import { Pool } from 'pg'
 
 dotenv.config({ path:'.env' })
+
+// Log into database
+export const pool = new Pool({
+    user: process.env.PGUSER ?? '',
+    database: process.env.PGNAME ?? '',
+    password: process.env.PGPASSWORD ?? '',
+    port: 5432,
+    host: 'localhost'
+  })
+  
 
 // Creat logger
 export const logger = winston.createLogger({
@@ -32,8 +43,6 @@ app.use(express.json())
 // Serve static assets from the assets directory
 app.use(express.static(path.resolve(__dirname)));
 
-console.log(path.basename(__dirname))
-
 app.get('/', (_:any, res:any) => {
   logger.info("New connection")
   res.sendFile(path.resolve(__dirname, 'music.html'))
@@ -45,10 +54,18 @@ app.post('/api/store-score', (req:any, res:any) => {
     name:string
   } = req.body
   logger.info(`Song ${score.name} achieved with score of ${score.score}`)
+  
+  pool.query("INSERT INTO scores (name,score) VALUES ($1,$2);",[score.name,score.score])
+    .then(() =>
+        res.status(200).json("Placeholder")
+    )
+    .catch((err) =>
+        res.status(500).json(`Error: ${err}`)
+    )
+  
   // Add returning percentage
-  res.status(200).json("Placeholder")
 })
     
-app.listen(port, () => {
+export const server = app.listen(port, () => {
     logger.info("Server started")
 })
