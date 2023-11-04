@@ -184,7 +184,26 @@ const AudioPlayer = () => {
         <VariableSlider name={"Tempo"} maxValue={10} stateVariable={tempoShift} setFunction={win === null ? setTempoShift : null} rightText="Plus rapide" leftText="Plus lent"/>
       </Flex>
       <Flex gap={"2"} align={"center"} direction={"column"}>
-        {a && <Button className={win === null ? "" : "button_to_disable_on_win"} size={"2"} onClick={handleClick}>{buttonName}</Button>}
+        {a && 
+        <Flex gap={"2"}>
+          <Button 
+            className={win === null ? "" : "button_to_disable_on_win"} 
+            size={"2"} 
+            onClick={handleClick}
+            >
+              {buttonName}
+          </Button>
+          {win === null && <Button 
+            className={win === null ? "" : "button_to_disable_on_win"} 
+            size={"2"} 
+            onClick={() => setWin("lose")}
+            >
+              Abandonner
+          </Button>
+}
+        </Flex>
+          }
+
         <Flex gap={"2"} direction={{initial:"column",sm:"row"}} align={"center"}>  
           <Box className="custom-audio-upload">
             <input 
