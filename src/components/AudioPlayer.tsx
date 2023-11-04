@@ -155,7 +155,9 @@ const AudioPlayer = () => {
       if (a && a.detune === 1 && a.playbackRate === 0.999) {
         setWin("win")
         console.log({attempts:attempts,time:time})
-        setScore(Math.floor(time/(attempts*2+3)*10) + 10)
+        let coeffAttempts = Math.exp(-attempts/8)
+        let coeffTime = Math.exp(-Math.max(musicTime - time - 10,0)/200)
+        setScore(Math.floor(990 * coeffAttempts * coeffTime) + 10)
       } else {
         setAttempts(attempts + 1)
       }
