@@ -5,4 +5,11 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   base: "/",
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      input: {
+        app: './music.html',
+      },
+    },
+  },
 })
