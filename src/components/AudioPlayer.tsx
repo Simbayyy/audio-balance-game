@@ -58,7 +58,7 @@ const AudioPlayer = () => {
             setBaseTempo(newBaseTempo)
             if (a) a.dispose()
             a = new GrainPlayer({url:data})
-            a.detune = (newBasePitch + pitchShift) * 100
+            a.detune = 1 + (newBasePitch + pitchShift) * 100
             await loaded();
             a.toDestination();
             a.loopEnd = a.buffer.duration
@@ -72,7 +72,7 @@ const AudioPlayer = () => {
             setScore(0)
             a.sync().start()
             Transport.start()
-            a.playbackRate = 0.95**(-newBaseTempo-tempoShift)
+            a.playbackRate = 0.999 * 0.95**(-newBaseTempo-tempoShift)
             setButtonName("Pause");
           })
           .catch((err) => {
@@ -152,7 +152,7 @@ const AudioPlayer = () => {
 
   const checkWin = (a:GrainPlayer | null) => {
     if (win === null) {
-      if (a && a.detune === 0 && a.playbackRate === 1) {
+      if (a && a.detune === 1 && a.playbackRate === 0.999) {
         setWin("win")
         console.log({attempts:attempts,time:time})
         setScore(Math.floor(time/(attempts*2+3)*10) + 10)
@@ -163,11 +163,11 @@ const AudioPlayer = () => {
   }
 
   useEffect(() => {
-    if (a) a.detune = (basePitch + pitchShift) * 100
+    if (a) a.detune = 1 + (basePitch + pitchShift) * 100
   }, [pitchShift])
 
   useEffect(() => {
-    if (a) a.playbackRate = 0.95**(-baseTempo-tempoShift)
+    if (a) a.playbackRate = 0.999 * 0.95**(-baseTempo-tempoShift)
   }, [tempoShift])
 
   return (
