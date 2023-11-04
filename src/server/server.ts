@@ -33,11 +33,22 @@ app.use(express.json())
 app.use(express.static(path.resolve(__dirname)));
 
 console.log(path.basename(__dirname))
+
 app.get('/', (_:any, res:any) => {
   logger.info("New connection")
   res.sendFile(path.resolve(__dirname, 'music.html'))
 })
 
+app.post('/api/store-score', (req:any, res:any) => {
+  const score: {
+    score:number,
+    name:string
+  } = req.body
+  logger.info(`Song ${score.name} achieved with score of ${score.score}`)
+  // Add returning percentage
+  res.status(200).json("Placeholder")
+})
+    
 app.listen(port, () => {
     logger.info("Server started")
 })

@@ -157,7 +157,17 @@ const AudioPlayer = () => {
         console.log({attempts:attempts,time:time})
         let coeffAttempts = Math.exp(-attempts/8)
         let coeffTime = Math.exp(-Math.max(musicTime - time - 10,0)/200)
-        setScore(Math.floor(990 * coeffAttempts * coeffTime) + 10)
+        let newScore = Math.floor(990 * coeffAttempts * coeffTime) + 10
+        setScore(newScore)
+        const url = `${
+          import.meta.env.VITE_ENV === "prod" ? "http://localhost:3000" : ""
+        }/api/store-score`;    
+        fetch(url,
+          {
+            body: JSON.stringify({ score:newScore, name:audio ? audio.name : "" }),
+            method: "POST",
+            headers: { "Content-Type": "application/json" },  
+          }) 
       } else {
         setAttempts(attempts + 1)
       }
