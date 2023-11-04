@@ -35,7 +35,7 @@ const AudioPlayer = () => {
     if (a) {
       a.stop();
       a.dispose()
-      setButtonName("");
+      setButtonName("Chargement...");
     }
     if (audio) {
       startAudio(audio)
@@ -46,10 +46,8 @@ const AudioPlayer = () => {
     let reader = new FileReader()
       reader.readAsArrayBuffer(audio)
       audio.arrayBuffer().then((buffer) => {
-        console.log("Chargement de l'audio")
         audioContext.decodeAudioData(buffer)
           .then(async (data) => {
-            console.log("Création du buffer")
             setPitchShift(0)
             setTempoShift(0)
             let newBasePitch = Math.floor(Math.random() * 11 - 5) 
@@ -64,7 +62,6 @@ const AudioPlayer = () => {
             a.loopEnd = a.buffer.duration
             a.loopStart = 0
             a.loop = true
-            a.onstop = () => {console.log(`a stopped`)}
             setMusicTime(Math.floor(a.buffer.duration))
             setWin(null)
             setTitle(`En écoute : ${audio.name}`)
@@ -76,7 +73,7 @@ const AudioPlayer = () => {
             setButtonName("Pause");
           })
           .catch((err) => {
-            console.log("something went wrong loading file:\n" + `${err}` )
+            console.error("something went wrong loading file:\n" + `${err}` )
           })
       })
   }
@@ -84,9 +81,13 @@ const AudioPlayer = () => {
   const handleClick = () => {
     if (a) {
         if (buttonName === "Play") {
-          Transport.start()
-          console.log("Lancement de l'audio")
+          if (win !== null) {
+            nextSong(true)
+          } else {
+            Transport.start()
+          }
           setButtonName("Pause");
+          
         } else {
           Transport.pause()
           setButtonName("Play");
@@ -107,12 +108,10 @@ const AudioPlayer = () => {
       a?.stop("+15")
       setTimeout(nextSong, 15000)
     } 
-    if (a?.state == "stopped") console.log("Should pass to next song")
-
   }, [win])
 
-  const nextSong = () => {
-    if (audioFiles.length !== 0) {
+  const nextSong = (force?: boolean) => {
+    if (audioFiles.length !== 0 && (buttonName === "Pause" || force)) {
       let newAudioFiles = audioFiles
       setAudio(newAudioFiles.shift())
       setAudioFiles(newAudioFiles) 
@@ -154,7 +153,6 @@ const AudioPlayer = () => {
     if (win === null) {
       if (a && a.detune === 1 && a.playbackRate === 0.999) {
         setWin("win")
-        console.log({attempts:attempts,time:time})
         let coeffAttempts = Math.exp(-attempts/8)
         let coeffTime = Math.exp(-Math.max(musicTime - time - 10,0)/200)
         let newScore = Math.floor(990 * coeffAttempts * coeffTime) + 10
