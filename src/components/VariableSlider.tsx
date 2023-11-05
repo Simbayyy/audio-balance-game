@@ -65,6 +65,7 @@ export const VariableSlider: React.FunctionComponent<{
   const isDesktop = useMediaQuery({
     query: '(min-width:768px)'
   })
+  
     return <Flex direction={"column"} gap={"1"}>
         <Text align={"center"} size={"5"} weight={"medium"}>{name}</Text>
         <Flex align={"center"} gap={"3"} wrap={"nowrap"} direction={{initial:"column",sm:"row"}} px={"1"}>

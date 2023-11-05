@@ -4,7 +4,7 @@ import { LeftBar } from "./LeftBar"
 import { RightBar } from "./RightBar"
 
 export const Page = () => {
-    return <Flex direction={{initial:'column',sm:'row'}}>
+    return <Flex style={{height:"100vh"}} direction={{initial:'column',md:'row'}}>
         <LeftBar />
         <AudioPlayer />
         <RightBar />

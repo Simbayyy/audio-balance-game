@@ -232,7 +232,7 @@ const AudioPlayer = () => {
   }, [tempoShift])
 
   return (
-    <Flex py={"6"} direction={"column"} align={"center"} gap={"6"}>
+    <Flex py={"6"} direction={"column"} grow={"1"} align={"center"} gap={"6"}>
       <Text align={"center"} weight={"bold"}>{title}</Text>
       <Counter initTime={musicTime} win={win} setWin={setWin} time={time} setTime={setTime}/>
       {win !== null && <Text size={"6"}>Score : {score}</Text>}

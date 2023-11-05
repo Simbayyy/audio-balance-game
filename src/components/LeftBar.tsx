@@ -15,7 +15,7 @@ export const LeftBar = () => {
             document.body.classList.remove('dark-theme')    
         }
     }
-    return <Flex grow={"0"} style={{borderRight:'0.1rem solid grey'}} justify={"center"} px={"2"} gap={"1"} direction={{initial:'row',sm:"column"}}>
+    return <Flex grow={"0"} style={{borderRight:'0.1rem solid grey'}} justify={"center"} px={"2"} gap={"1"} direction={{initial:'row',md:"column"}}>
         <Toggle.Root className='ToggleGroupItem' onPressedChange={(pressed) => changeTheme(pressed)}>
             <Text>{text}</Text>
         </Toggle.Root>

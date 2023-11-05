@@ -11,7 +11,9 @@
     "deploy": "npm i --include=dev && npm run build && tsc src/server/*.ts --noEmit false && mv src/server/server.js dist/server.cjs && touch tmp/restart.txt"
   },
   "dependencies": {
+    "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-progress": "^1.0.3",
     "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-toggle-group": "^1.0.4",
