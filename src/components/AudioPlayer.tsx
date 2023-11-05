@@ -8,11 +8,26 @@ import { HowToPlay } from "./HowToPlay";
 import { Playlist } from "./Playlist";
 import { FreeMusic } from "./FreeMusic";
 import { ProgressBar } from "./ProgressBar";
+import { Score } from "./Page";
 
 const AudioContext = window.AudioContext;
 const audioContext = new AudioContext();
 
-const AudioPlayer = () => {
+const AudioPlayer: React.FunctionComponent<{
+  audio: File | null | undefined
+  audioFiles: File[]
+  setAudio: React.Dispatch<React.SetStateAction<File | null | undefined>>
+  setAudioFiles: React.Dispatch<React.SetStateAction<File[]>>
+  scoreList: Score[]
+  setScoreList: React.Dispatch<React.SetStateAction<Score[]>>
+}> = ({
+  audio,
+  audioFiles,
+  setAudio,
+  setAudioFiles,
+  scoreList,
+  setScoreList
+}) => {
   const [buttonName, setButtonName] = useState("Jouer");
   const [pitchShift, setPitchShift] = useState(0);
   const [tempoShift, setTempoShift] = useState(0);
@@ -22,8 +37,6 @@ const AudioPlayer = () => {
   const [attempts, setAttempts] = useState(0)
   const [win, setWin] = useState<'win' | 'lose' | null>(null)
   const [title, setTitle] = useState("Bienvenue ! Lance un fichier son pour commencer")
-  const [audio, setAudio] = useState<File | null>();
-  const [audioFiles, setAudioFiles] = useState<File[]>([])
   const [time, setTime] = useState(-1)
   const [score, setScore] = useState(0)
   const [music, setMusic] = useState<GrainPlayer | null>(null)
@@ -208,6 +221,14 @@ const AudioPlayer = () => {
         let coeffTime = Math.exp(-Math.max(musicTime - time - 10,0)/200)
         let newScore = Math.floor(990 * coeffAttempts * coeffTime) + 10
         setScore(newScore)
+        let newScoreList = [{
+          score:newScore,
+          title:title
+            .replace(/^En écoute : /, "")
+            .replace(/\.[^.]{1,5}$/, "")
+        },...scoreList]
+        setScoreList(newScoreList)
+        setAttempts(0)
         const url = `${
           import.meta.env.VITE_ENV === "prod" ? "http://localhost:3000" : ""
         }/api/store-score`;    

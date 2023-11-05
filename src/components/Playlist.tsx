@@ -1,7 +1,7 @@
 import { Button, Dialog, Flex, Text } from "@radix-ui/themes"
 
 export const Playlist:React.FunctionComponent<{
-    audio:File,
+    audio:File | null | undefined,
     audioFiles:File[]
 }> = ({
     audio,
@@ -14,13 +14,13 @@ export const Playlist:React.FunctionComponent<{
         <Dialog.Content style={{ maxWidth: 450 }}>
             <Dialog.Title>Musique en cours</Dialog.Title>
             <Dialog.Description>
-                {audio.name}
+                {audio ? audio.name.replace(/\.[^.]{1,5}$/, "") : "Aucune"}
             </Dialog.Description>
             <Dialog.Title style={{ paddingTop:"1rem"}}>Musiques suivantes</Dialog.Title>
             <Dialog.Description size={"2"}>
                 {audioFiles.length != 0 ? 
                 <Flex direction={"column"} gap={"1"}>
-                    {audioFiles.map((elt,index) => {return <Text key={index}>{elt.name}</Text>})}
+                    {audioFiles.map((elt,index) => {return <Text key={index}>{elt.name.replace(/\.[^.]{1,5}$/, "")}</Text>})}
                 </Flex>
                 : <Text>Aucune musique en attente</Text>}
             </Dialog.Description>
