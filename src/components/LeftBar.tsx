@@ -21,12 +21,13 @@ export const LeftBar = () => {
     }
     return <Flex 
             grow={"0"}
-            style={{borderRight:isDesktop ? '0.1rem solid grey' : ""}} 
-            justify={"center"} 
+            style={{borderRight:false ? '0.1rem solid grey' : "",height:isDesktop ? "100%" : ""}} 
+            justify={{initial:"center",md:"start"}}
+            position={{initial:"relative",md:"absolute"}}
             px={"2"} 
             py={"2"}
             gap={"1"} 
-            direction={{initial:'row',md:"column"}}>
+            direction={{initial:'row',md:"column-reverse"}}>
         <Toggle.Root className='ToggleGroupItem' onPressedChange={(pressed) => changeTheme(pressed)}>
             <Text>{text}</Text>
         </Toggle.Root>
