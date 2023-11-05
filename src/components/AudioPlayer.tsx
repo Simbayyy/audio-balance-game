@@ -63,6 +63,12 @@ const AudioPlayer: React.FunctionComponent<{
     }
   }, [audio]);
 
+  useEffect(() => {
+    if (win !== null) {
+      nextSong()
+    }
+  }, [audioFiles])
+
   const startAudio = async (audio:File) => {
     clearTimeout(nextSongTimeout)
     isLoading = true
@@ -194,8 +200,7 @@ const AudioPlayer: React.FunctionComponent<{
         if (filesToAdd.length !== 0) {
           let nextAudioFiles = filesToAdd.concat(audioFiles)
           setAudioFiles(nextAudioFiles)
-          if (win !== null) nextSong()
-          else preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)
+          if (win == null) preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)
 
         }
     }
@@ -207,8 +212,7 @@ const AudioPlayer: React.FunctionComponent<{
         if (filesToAdd.length !== 0) {
           let nextAudioFiles = audioFiles.concat(filesToAdd)
           setAudioFiles(nextAudioFiles)
-          if (win !== null) nextSong()
-          else preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)
+          if (win == null) preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)
         }
     }
   };

@@ -26,7 +26,9 @@ export const RightBar: React.FunctionComponent<{
             grow={"0"}
             style={{
                 borderLeft:(open && isDesktop) ? '0.1rem solid grey' : "",
-                maxWidth: (open && isDesktop) ? "20vw" : ""
+                maxWidth: (open && isDesktop) ? "20vw" : "",
+                maxHeight: isDesktop ? '100vh' : "",
+                overflowY: 'scroll',
             }}>
         <Collapsible.Root 
           className="CollapsibleRoot"
