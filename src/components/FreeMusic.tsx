@@ -2,14 +2,14 @@ import { Button, Dialog, Flex, HoverCard, Text } from "@radix-ui/themes"
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import React, {useState} from "react"
 
-import hall from '../assets/kevinmcleod/Hall of the Mountain King.mp3'
-import gymno1 from '../assets/kevinmcleod/Gymnopedie No 1.mp3'
-import aquarium from '../assets/kevinmcleod/Aquarium.mp3'
-import toccata from '../assets/kevinmcleod/Toccata and Fugue in D Minor.mp3'
-import duck from '../assets/kevinmcleod/Fluffing a Duck.mp3'
-import snitch from '../assets/kevinmcleod/Sneaky Snitch.mp3'
-import monkeys from '../assets/kevinmcleod/Monkeys Spinning Monkeys.mp3'
-import macabre from '../assets/kevinmcleod/Danse Macabre.mp3'
+import hall from '../assets/kevinmcleod/KevinMcLeod-Hall of the Mountain King.mp3'
+import gymno1 from '../assets/kevinmcleod/KevinMcLeod-Gymnopedie No 1.mp3'
+import aquarium from '../assets/kevinmcleod/KevinMcLeod-Aquarium.mp3'
+import toccata from '../assets/kevinmcleod/KevinMcLeod-Toccata and Fugue in D Minor.mp3'
+import duck from '../assets/kevinmcleod/KevinMcLeod-Fluffing a Duck.mp3'
+import snitch from '../assets/kevinmcleod/KevinMcLeod-Sneaky Snitch.mp3'
+import monkeys from '../assets/kevinmcleod/KevinMcLeod-Monkeys Spinning Monkeys.mp3'
+import macabre from '../assets/kevinmcleod/KevinMcLeod-Danse Macabre.mp3'
 import ritz from '../assets/Puttin on the Ritz.mp3' 
 import internationale from "../assets/L'Internationale.mp3" 
 
@@ -105,6 +105,7 @@ export const FreeMusic:React.FunctionComponent<{
                                         .replace(/.*\//,"")
                                         .replace(/.mp3/,"")
                                         .replace(/-[\w\d]+$/, "")
+                                        .replace(/KevinMcLeod-/,"")
                     return <Flex 
                               key={index}
                               py={"2"}
@@ -147,7 +148,7 @@ export const FreeMusic:React.FunctionComponent<{
                             elt={elt} 
                             />                    
                     </Flex>
-                    {elt.match(/kevinmcleod/) &&  
+                    {elt.match(/KevinMcLeod-/) &&  
                       <HoverCard.Root>
                       <HoverCard.Trigger>
                         <Text>?</Text>
