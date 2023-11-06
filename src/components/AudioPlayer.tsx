@@ -69,7 +69,7 @@ const AudioPlayer: React.FunctionComponent<{
   }, [audio]);
 
   useEffect(() => {
-    if (win !== null) {
+    if (win !== null || title === "Bienvenue ! Lance un fichier son pour commencer") {
       nextSong()
     }
   }, [audioFiles])
@@ -123,6 +123,9 @@ const AudioPlayer: React.FunctionComponent<{
         loadingMusic.detune = 1 + (newBasePitch + pitchShift) * 100
         loadingMusic.sync().start()
         Transport.start()
+        setTimeout(() => {
+          if (buttonNameRef.current = 'Pause') Transport.start()
+        }, 100)
         loadingMusic.playbackRate = 0.999 * 0.95**(-newBaseTempo-tempoShift)
         setMusic(loadingMusic)
         setButtonName("Pause");
@@ -166,7 +169,7 @@ const AudioPlayer: React.FunctionComponent<{
   }, [win])
 
   const nextSong = (force?: boolean) => {
-    if (audioFiles.length !== 0 && !isLoading && (buttonNameRef.current === "Pause" || force)) {
+    if (audioFiles.length !== 0 && !isLoading && (buttonNameRef.current === "Pause" || title === "Bienvenue ! Lance un fichier son pour commencer" || force)) {
       let newAudioFiles = audioFiles
       setAudio(newAudioFiles.shift())
       setAudioFiles(newAudioFiles)
