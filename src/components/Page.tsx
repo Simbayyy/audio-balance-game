@@ -3,6 +3,7 @@ import { Flex } from '@radix-ui/themes'
 import { LeftBar } from "./LeftBar"
 import { RightBar } from "./RightBar"
 import { useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 
 export interface Score {
     title: string
@@ -13,8 +14,11 @@ export const Page = () => {
     const [audio, setAudio] = useState<File | null | undefined>();
     const [audioFiles, setAudioFiles] = useState<File[]>([])
     const [scoreList, setScoreList] = useState<Score[]>([])
-  
-    return <Flex style={{minHeight:"100vh"}} direction={{initial:'column',md:'row'}}>
+    const isDesktop = useMediaQuery({
+        query: '(min-width:1024px)'
+      })
+
+    return <Flex style={{height:isDesktop ? "100vh" : ""}} direction={{initial:'column',md:'row'}}>
         <LeftBar />
         <AudioPlayer 
             audio={audio}

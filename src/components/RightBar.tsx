@@ -28,7 +28,6 @@ export const RightBar: React.FunctionComponent<{
                 borderLeft:(open && isDesktop) ? '0.1rem solid grey' : "",
                 maxWidth: (open && isDesktop) ? "20vw" : "",
                 maxHeight: isDesktop ? '100vh' : "",
-                overflowY: 'scroll',
             }}>
         <Collapsible.Root 
           className="CollapsibleRoot"
@@ -45,7 +44,8 @@ export const RightBar: React.FunctionComponent<{
             <Collapsible.Content 
                 style={{
                     paddingBottom:"1rem", 
-                    justifySelf:"flex-end"
+                    justifySelf:"flex-end",
+                    overflowY: 'scroll',
                 }}>
                 <Flex grow={"1"} gap={"5"} direction={"column"}>
                     {(audio || audioFiles.length !== 0) && <Table.Root variant="surface">

@@ -9,6 +9,7 @@ import { Playlist } from "./Playlist";
 import { FreeMusic } from "./FreeMusic";
 import { ProgressBar } from "./ProgressBar";
 import { Score } from "./Page";
+import { useMediaQuery } from 'react-responsive'
 
 const AudioContext = window.AudioContext;
 const audioContext = new AudioContext();
@@ -43,6 +44,10 @@ const AudioPlayer: React.FunctionComponent<{
   const [nextMusic, setNextMusic] = useState<GrainPlayer | null>(null)
   const [progress, setProgress] = useState<'hidden' | 'started' | 'ended' >('hidden');
   const buttonNameRef = useRef('Jouer')
+  const isDesktop = useMediaQuery({
+    query: '(min-width:1024px)'
+  })
+
 
   let isLoading = false
   let nextSongTimeout: NodeJS.Timeout
@@ -257,7 +262,7 @@ const AudioPlayer: React.FunctionComponent<{
   }, [tempoShift])
 
   return (
-    <Flex py={"6"} direction={"column"} grow={"1"} align={"center"} gap={"6"}>
+    <Flex py={"6"} direction={"column"} grow={"1"} style={isDesktop ?{height:'100vh',overflowY:'scroll'} : {}} align={"center"} gap={"6"}>
       <Text align={"center"} weight={"bold"}>{title}</Text>
       <Counter initTime={musicTime} win={win} setWin={setWin} time={time} setTime={setTime}/>
       {win !== null && <Text size={"6"}>Score : {score}</Text>}
