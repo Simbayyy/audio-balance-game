@@ -12,6 +12,10 @@ import monkeys from '../assets/kevinmcleod/KevinMcLeod-Monkeys Spinning Monkeys.
 import macabre from '../assets/kevinmcleod/KevinMcLeod-Danse Macabre.mp3'
 import ritz from '../assets/Puttin on the Ritz.mp3' 
 import internationale from "../assets/L'Internationale.mp3" 
+import horology from '../assets/Horology.mp3'
+import tetra from '../assets/Tetrachromacy.mp3'
+import castle from '../assets/The Castle In The Air.mp3'
+
 
 export const FreeMusic:React.FunctionComponent<{
     setAudioFiles:React.Dispatch<React.SetStateAction<File[]>>,
@@ -24,8 +28,8 @@ export const FreeMusic:React.FunctionComponent<{
     audioFiles,
     win,
 }) => {
-    type Genre = "jazz"|"meme"|"trad"|"classical"
-    const allGenres = ["jazz","meme","trad","classical"]
+    type Genre = "jazz"|"meme"|"trad"|"classical"|"rock"
+    const allGenres = ["jazz","meme","trad","classical","rock"]
     const [filters, setFilters] = useState<Genre[]>(allGenres as Genre[])
 
     const AddButton: React.FunctionComponent<{
@@ -68,6 +72,7 @@ export const FreeMusic:React.FunctionComponent<{
         "meme":[monkeys,duck,snitch],
         "trad":[internationale],
         "classical":[toccata,gymno1,hall,macabre,aquarium],
+        "rock":[tetra,castle,horology]
     }
 
     return <Dialog.Root>
@@ -79,7 +84,7 @@ export const FreeMusic:React.FunctionComponent<{
             <ToggleGroup.Root
               className="ToggleGroup"
               type="multiple"
-              defaultValue={["jazz","meme","trad","classical"]}
+              defaultValue={["jazz","meme","trad","classical","rock"]}
               onValueChange={(value) => {setFilters(value as Genre[])}}
               aria-label="Text alignment"
             >
@@ -94,6 +99,9 @@ export const FreeMusic:React.FunctionComponent<{
                 </ToggleGroup.Item>
                 <ToggleGroup.Item className="ToggleGroupItem" value="trad" aria-label="Musique traditionnelle">
                     <Text>Traditionnelle</Text>
+                </ToggleGroup.Item>
+                <ToggleGroup.Item className="ToggleGroupItem" value="rock" aria-label="Musique rock">
+                    <Text>Rock</Text>
                 </ToggleGroup.Item>
             </ToggleGroup.Root>
 
