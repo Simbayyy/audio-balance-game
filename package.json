@@ -26,7 +26,8 @@
     "react-dom": "^18.2.0",
     "react-responsive": "^9.0.2",
     "tone": "^14.7.77",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "yt-dlp-wrap": "^2.3.12"
   },
   "devDependencies": {
     "@types/express": "^4.17.20",

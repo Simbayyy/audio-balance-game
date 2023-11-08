@@ -3,6 +3,9 @@ import * as path from 'path'
 import * as dotenv from 'dotenv'
 import * as winston from 'winston'
 import { Pool } from 'pg'
+import YTDlpWrap from 'yt-dlp-wrap';
+
+const ytDlpWrap = new YTDlpWrap(path.resolve(__dirname, '..', 'tools','yt-dlp'));
 
 dotenv.config({ path:'.env' })
 
@@ -64,6 +67,36 @@ app.post('/api/store-score', (req:any, res:any) => {
     )
   
   // Add returning percentage
+})
+
+app.post('/api/find-mp3-link', (req:any, res:any) => {
+  const url: string = req.body.url
+  logger.info(`Song at url ${url} requested`)
+  ytDlpWrap.execPromise([
+    url,
+    '-g',
+    '-f',
+    'bestaudio',
+  ]).then((value) => {
+    logger.info(value)
+    res.status(200).json({title:value})
+  })
+  .catch((error) => {
+    logger.error(error)
+    res.status(500).error()
+  })
+})
+
+app.get('/api/find-mp3-link', (_:any, res:any) => {
+  ytDlpWrap.execPromise([
+    'https://www.youtube.com/watch?v=aqz-KE-bpKQ',
+    '-g',
+    '-f',
+    'bestaudio',
+  ]).then((value) => {
+    logger.info(value)
+    res.status(200).json({title:value})
+  });
 })
     
 export const server = app.listen(port, () => {
