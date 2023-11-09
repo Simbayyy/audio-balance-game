@@ -1,4 +1,4 @@
-import { Button, Dialog, Flex, HoverCard, Text } from "@radix-ui/themes"
+import { Button, Dialog, Box, Flex, HoverCard, Text } from "@radix-ui/themes"
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import React, {useState} from "react"
 
@@ -62,7 +62,7 @@ export const FreeMusic:React.FunctionComponent<{
                             stuffToDo(file)
                         })
                 }}>
-                    {text}
+                    <Text>{text}</Text>
             </Button>
         </Dialog.Close> 
     }
@@ -77,7 +77,12 @@ export const FreeMusic:React.FunctionComponent<{
 
     return <Dialog.Root>
         <Dialog.Trigger>
-            <Button>Musiques libres</Button>
+            <Box
+              className="custom-audio-upload">
+                <Text className="audio-label">
+                Musiques libres
+                </Text>
+            </Box>
         </Dialog.Trigger>
         <Dialog.Content style={{ maxWidth: 450, maxHeight:"80vh" }}>
             <Dialog.Title align={"center"}>Musiques libres</Dialog.Title>

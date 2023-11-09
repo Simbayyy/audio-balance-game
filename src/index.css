@@ -101,7 +101,7 @@ button:focus-visible {
   cursor: pointer;
 }
 
-.custom-audio-upload .audio-label {
+.custom-audio-upload {
   display: inline-block;
   color: #007BFF;
   border-style: dashed;
@@ -112,8 +112,10 @@ button:focus-visible {
   cursor: pointer;
 }
 
-.custom-audio-upload .audio-label:hover {
-  background: #0056b3;
+.custom-audio-upload:hover {
+  background: #007BFF;
+  color: white;
+  transition: all 0.1s ease-in;
 }
 
 .button_to_disable_on_win {

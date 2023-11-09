@@ -446,12 +446,12 @@ const AudioPlayer: React.FunctionComponent<{
                     </Flex>
                   </Flex>
               </Popover.Content>
-          </Popover.Root> 
+          </Popover.Root>
         </Flex>
+        <FreeMusic setAudioFiles={setAudioFiles} audioFiles={audioFiles} setAudio={setAudio} win={win}/>
         <Flex gap={"2"} direction={{initial:"column",sm:"row"}} align={"center"}>
           <HowToPlay />
           {audio && <Playlist audio={audio} audioFiles={audioFiles}/>}
-          <FreeMusic setAudioFiles={setAudioFiles} audioFiles={audioFiles} setAudio={setAudio} win={win}/>
         </Flex>
       </Flex>
     </Flex>
