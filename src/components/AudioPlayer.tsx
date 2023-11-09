@@ -408,35 +408,41 @@ const AudioPlayer: React.FunctionComponent<{
                   <Flex direction={"column"}>
                     <Text size={"2"} style={{fontStyle:'italic',padding:"0.5rem"}}>{`${youtubeError ? "Une erreur est survenue, merci de réessayer" : "Entre un lien YouTube pour jouer cette chanson"}`}</Text>
                     <Flex direction={"row"} justify={"between"}>
-                      <Button onClick={() => {
-                        fetchYoutube(url).then((res) => {
-                          if (res) setAudio(res)
-                        })
-                        }}>
-                        Jouer
-                      </Button>
-                      <Button onClick={() => {
-                        fetchYoutube(url).then((res) => {
-                          if (res) {
-                            let nextAudioFiles = [res].concat(audioFiles)
-                            setAudioFiles(nextAudioFiles)
-                            if (win == null) preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)                  
-                          }
-                        })
-                        }}>
-                        Jouer après
-                      </Button>
-                      <Button onClick={() => {
-                        fetchYoutube(url).then((res) => {
-                          if (res) {
-                            let nextAudioFiles = audioFiles.concat([res])
-                            setAudioFiles(nextAudioFiles)
-                            if (win == null) preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)                  
-                          }
-                        })
-                        }}>
-                        Jouer à la fin
-                      </Button>
+                      <Popover.Close>
+                        <Button onClick={() => {
+                          fetchYoutube(url).then((res) => {
+                            if (res) setAudio(res)
+                          })
+                          }}>
+                          Jouer
+                        </Button>
+                      </Popover.Close>
+                      <Popover.Close>
+                        <Button onClick={() => {
+                          fetchYoutube(url).then((res) => {
+                            if (res) {
+                              let nextAudioFiles = [res].concat(audioFiles)
+                              setAudioFiles(nextAudioFiles)
+                              if (win == null) preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)                  
+                            }
+                          })
+                          }}>
+                          Jouer après
+                        </Button>
+                      </Popover.Close>
+                      <Popover.Close>
+                        <Button onClick={() => {
+                          fetchYoutube(url).then((res) => {
+                            if (res) {
+                              let nextAudioFiles = audioFiles.concat([res])
+                              setAudioFiles(nextAudioFiles)
+                              if (win == null) preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)                  
+                            }
+                          })
+                          }}>
+                          Jouer à la fin
+                        </Button>
+                      </Popover.Close>
                     </Flex>
                   </Flex>
               </Popover.Content>
