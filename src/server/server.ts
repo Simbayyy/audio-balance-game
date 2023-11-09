@@ -107,25 +107,9 @@ app.post('/api/find-mp3-link', (req:any, res:any) => {
       })  
     })
   })
-  .catch((error) => {
-    logger.error(error)
-    res.status(500).error()
-  })
-})
-
-app.get('/api/find-mp3-link', (_:any, res:any) => {
-  ytDlpWrap.execPromise([
-    'https://www.youtube.com/watch?v=aqz-KE-bpKQ',
-    '-f',
-    'bestaudio[filesize<10M]',
-    '-o',
-    'output'
-  ]).then(() => {
-    res.status(200).sendFile(path.resolve(__dirname, '..', 'output'))
-    
-  }).catch((error) => {
-    logger.error(error)
-    res.status(500).json({error:error})
+  .catch((err) => {
+    logger.error(err)
+    res.status(500).json(`Error: ${err}`)
   })
 })
     

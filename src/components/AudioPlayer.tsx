@@ -83,7 +83,6 @@ const AudioPlayer: React.FunctionComponent<{
     let loadingMusic: GrainPlayer | null
     if (nextMusic && !refresh) {
       loadingMusic = nextMusic
-      console.log("From preload")
       setNextMusic(null)
       preloadNextSong(audioFiles.length != 0 ? audioFiles[0] : null)
     } else {
@@ -274,7 +273,6 @@ const AudioPlayer: React.FunctionComponent<{
   const fetchYoutube = async (url:string) => {
     try {
       let name:string
-      console.log(`Fetching audio from ${url}`)
       let newAudio = await fetch(`${
         import.meta.env.VITE_ENV === "prod" ? "http://localhost:3000" : ""
       }/api/find-mp3-link`,
@@ -312,7 +310,7 @@ const AudioPlayer: React.FunctionComponent<{
   return (
     <Flex py={"6"} direction={"column"} grow={"1"} style={isDesktop ?{height:'100vh',overflowY:'scroll'} : {}} align={"center"} gap={"6"}>
       <Text align={"center"} weight={"bold"}>{title}</Text>
-      <Counter initTime={musicTime} pause={buttonName} win={win} setWin={setWin} time={time} setTime={setTime}/>
+      <Counter initTime={musicTime} pause={buttonNameRef} win={win} setWin={setWin} time={time} setTime={setTime}/>
       {win !== null && <Text size={"6"}>Score : {score}</Text>}
       {progress !== 'hidden' && <ProgressBar progress={progress} />}
       {progress === 'hidden' && <Flex gap={"4"} px={"2"} align={"center"}>
