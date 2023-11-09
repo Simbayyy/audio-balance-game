@@ -61,12 +61,14 @@ const AudioPlayer: React.FunctionComponent<{
   useEffect(() => {
     if (music) {
       music.stop();
+      audioContext.resume()
       music.dispose()
       setButtonName("Chargement...");
       buttonNameRef.current = "Chargement...";
     }
     if (audio) {
       startAudio(audio)
+      audioContext.resume()
     }
   }, [audio]);
 
@@ -140,6 +142,10 @@ const AudioPlayer: React.FunctionComponent<{
   }
 
   const handleClick = () => {
+    if(!(audioContext.state === 'running' || audioContext.state === 'closed' )) {
+      audioContext.resume()
+    }
+
     if (music) {
         if (buttonName === "Jouer") {
           if (win !== null) {
@@ -308,7 +314,7 @@ const AudioPlayer: React.FunctionComponent<{
   }, [tempoShift])
 
   return (
-    <Flex py={"6"} direction={"column"} grow={"1"} style={isDesktop ?{height:'100vh',overflowY:'scroll'} : {}} align={"center"} gap={"6"}>
+    <Flex py={"6"} direction={"column"} grow={"1"} style={isDesktop ?{height:'100vh',overflowY:'auto',scrollbarWidth:'thin'} : {}} align={"center"} gap={"6"}>
       <Text align={"center"} weight={"bold"}>{title}</Text>
       <Counter initTime={musicTime} pause={buttonNameRef} win={win} setWin={setWin} time={time} setTime={setTime}/>
       {win !== null && <Text size={"6"}>Score : {score}</Text>}

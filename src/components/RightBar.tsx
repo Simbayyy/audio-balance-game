@@ -33,7 +33,7 @@ export const RightBar: React.FunctionComponent<{
           className="CollapsibleRoot"
           open={open}
           onOpenChange={setOpen}
-          style={{flexDirection:isDesktop ? "column-reverse" : "column"}}>
+          style={{flexDirection:isDesktop ? "column-reverse" : "column", height:'100%'}}>
             <Collapsible.Trigger asChild>
                 <Button style={{width:"5rem",marginBottom:"1rem",height:"5rem"}} radius='full'>
                     {open
@@ -45,7 +45,8 @@ export const RightBar: React.FunctionComponent<{
                 style={{
                     paddingBottom:"1rem", 
                     justifySelf:"flex-end",
-                    overflowY: 'scroll',
+                    overflowY:'auto',
+                    scrollbarWidth:'thin'
                 }}>
                 <Flex grow={"1"} gap={"5"} direction={"column"}>
                     {(audio || audioFiles.length !== 0) && <Table.Root variant="surface">
