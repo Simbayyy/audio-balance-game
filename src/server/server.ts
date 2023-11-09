@@ -4,10 +4,11 @@ import * as dotenv from 'dotenv'
 import * as winston from 'winston'
 import { Pool } from 'pg'
 import YTDlpWrap from 'yt-dlp-wrap';
-
-const ytDlpWrap = new YTDlpWrap(path.resolve(__dirname, '..', 'tools','yt-dlp'));
+import * as fs from 'fs'
 
 dotenv.config({ path:'.env' })
+
+const ytDlpWrap = new YTDlpWrap(path.resolve(__dirname, process.env.REL_YTDLP_PATH ?? ''));
 
 // Log into database
 export const pool = new Pool({
@@ -74,12 +75,37 @@ app.post('/api/find-mp3-link', (req:any, res:any) => {
   logger.info(`Song at url ${url} requested`)
   ytDlpWrap.execPromise([
     url,
-    '-g',
     '-f',
-    'bestaudio',
+    'worstaudio[filesize<10M]',
+    '-q',
+    '--no-simulate',
+    '--print',
+    '%(title)s.%(ext)s',
+    '--no-playlist',
+    '-o',
+    'temp/%(title)s.%(ext)s'
   ]).then((value) => {
-    logger.info(value)
-    res.status(200).json({title:value})
+    res.setHeader('Name', value.replace(/\.[^.]+/, ""));
+    res.setHeader('Content-Transfer-Encoding', 'binary');
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.sendFile(path.resolve(__dirname, '..', 'temp', value.slice(0,-1)), (err:any) => {
+      if (err) {
+        console.error(err)
+      } else {
+        console.info('Sent file!')
+      }
+      fs.unlink(path.resolve(__dirname, '..', 'temp', value.slice(0,-1)), function(err) {
+        if(err && err.code == 'ENOENT') {
+            // file doens't exist
+            console.info("File doesn't exist, won't remove it.");
+        } else if (err) {
+            // other errors, e.g. maybe we don't have enough permission
+            console.error("Error occurred while trying to remove file");
+        } else {
+            console.info(`removed`);
+        }
+      })  
+    })
   })
   .catch((error) => {
     logger.error(error)
@@ -90,13 +116,17 @@ app.post('/api/find-mp3-link', (req:any, res:any) => {
 app.get('/api/find-mp3-link', (_:any, res:any) => {
   ytDlpWrap.execPromise([
     'https://www.youtube.com/watch?v=aqz-KE-bpKQ',
-    '-g',
     '-f',
-    'bestaudio',
-  ]).then((value) => {
-    logger.info(value)
-    res.status(200).json({title:value})
-  });
+    'bestaudio[filesize<10M]',
+    '-o',
+    'output'
+  ]).then(() => {
+    res.status(200).sendFile(path.resolve(__dirname, '..', 'output'))
+    
+  }).catch((error) => {
+    logger.error(error)
+    res.status(500).json({error:error})
+  })
 })
     
 export const server = app.listen(port, () => {

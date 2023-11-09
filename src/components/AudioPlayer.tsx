@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 // @ts-ignore
 import { GrainPlayer, Transport, loaded, start } from 'tone'
 import { Counter } from "./Counter";
-import { Box, Button, Flex, Text } from "@radix-ui/themes";
+import { Box, Button, Flex, Text, Popover, TextField } from "@radix-ui/themes";
 import { VariableSlider } from "./VariableSlider";
 import { HowToPlay } from "./HowToPlay";
 import { Playlist } from "./Playlist";
@@ -43,6 +43,8 @@ const AudioPlayer: React.FunctionComponent<{
   const [music, setMusic] = useState<GrainPlayer | null>(null)
   const [nextMusic, setNextMusic] = useState<GrainPlayer | null>(null)
   const [progress, setProgress] = useState<'hidden' | 'started' | 'ended' >('hidden');
+  const [url, setUrl] = useState('');
+  const [youtubeError, setYoutubeError] = useState(false);
   const buttonNameRef = useRef('Jouer')
   const isDesktop = useMediaQuery({
     query: '(min-width:1024px)'
@@ -74,12 +76,12 @@ const AudioPlayer: React.FunctionComponent<{
     }
   }, [audioFiles])
 
-  const startAudio = async (audio:File) => {
+  const startAudio = async (audio:File, refresh=false) => {
     clearTimeout(nextSongTimeout)
     isLoading = true
     let reader = new FileReader()
     let loadingMusic: GrainPlayer | null
-    if (nextMusic) {
+    if (nextMusic && !refresh) {
       loadingMusic = nextMusic
       console.log("From preload")
       setNextMusic(null)
@@ -115,7 +117,11 @@ const AudioPlayer: React.FunctionComponent<{
         setBasePitch(newBasePitch)
         let newBaseTempo = Math.floor(Math.random() * 11 - 5) 
         setBaseTempo(newBaseTempo)
-        setMusicTime(Math.floor(loadingMusic.buffer.duration))
+        if (Math.floor(loadingMusic.buffer.duration) === musicTime) {
+          setMusicTime(musicTime + 1)
+        } else {
+          setMusicTime(Math.floor(loadingMusic.buffer.duration))
+        }
         setWin(null)
         setTitle(`En écoute : ${audio.name}`)
         setAttempts(0)
@@ -194,7 +200,12 @@ const AudioPlayer: React.FunctionComponent<{
     if (e.target.files) {
       let filesToAdd = [...e.target.files]
         if (filesToAdd.length !== 0) {
-          setAudio(filesToAdd.shift());
+          let newAudio = filesToAdd.shift()
+          if (newAudio === audio && audio) {
+            startAudio(audio,true)
+          } else {
+            setAudio(newAudio);
+          }
           let nextAudioFiles = audioFiles.concat(filesToAdd)
           setAudioFiles(nextAudioFiles)
           setNextMusic(null)
@@ -256,6 +267,40 @@ const AudioPlayer: React.FunctionComponent<{
     }
   }
 
+  const handleUrlChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value)
+  }
+
+  const fetchYoutube = async (url:string) => {
+    try {
+      let name:string
+      console.log(`Fetching audio from ${url}`)
+      let newAudio = await fetch(`${
+        import.meta.env.VITE_ENV === "prod" ? "http://localhost:3000" : ""
+      }/api/find-mp3-link`,
+      {
+        method:'POST',
+        headers: { "Content-Type": "application/json" },  
+        body: JSON.stringify({ url:url })
+      }).then((res) => {
+          name = res.headers.get('Name') ?? "Nom non trouvé"
+          return res.blob()
+        })
+        .then((blob) => {
+          return new File([blob], name)
+        })
+        .catch(() => {
+          throw Error('Could not fetch audio from youtube URL')
+        })
+      setYoutubeError(false)
+      return newAudio
+    } catch (err) {
+      setYoutubeError(true)
+      console.error(err)
+      return null
+    }
+  } 
+
   useEffect(() => {
     if (music) music.detune = 1 + (basePitch + pitchShift) * 100
   }, [pitchShift])
@@ -267,7 +312,7 @@ const AudioPlayer: React.FunctionComponent<{
   return (
     <Flex py={"6"} direction={"column"} grow={"1"} style={isDesktop ?{height:'100vh',overflowY:'scroll'} : {}} align={"center"} gap={"6"}>
       <Text align={"center"} weight={"bold"}>{title}</Text>
-      <Counter initTime={musicTime} win={win} setWin={setWin} time={time} setTime={setTime}/>
+      <Counter initTime={musicTime} pause={buttonName} win={win} setWin={setWin} time={time} setTime={setTime}/>
       {win !== null && <Text size={"6"}>Score : {score}</Text>}
       {progress !== 'hidden' && <ProgressBar progress={progress} />}
       {progress === 'hidden' && <Flex gap={"4"} px={"2"} align={"center"}>
@@ -281,19 +326,31 @@ const AudioPlayer: React.FunctionComponent<{
       <Flex gap={"2"} align={"center"} direction={"column"}>
         {music && 
         <Flex gap={"2"}>
-          <Button 
+          {win === null ? <Button 
             className={win === null ? "" : "button_to_disable_on_win"} 
             size={"2"} 
             onClick={handleClick}
             >
               {buttonName}
           </Button>
-          {win === null && <Button 
+          : audioFiles.length !== 0 && <Button 
+            size={"2"} 
+            onClick={() => {nextSong()}}
+            >
+              Suivante
+          </Button>}
+          {win === null ? <Button 
             className={win === null ? "" : "button_to_disable_on_win"} 
             size={"2"} 
             onClick={() => setWin("lose")}
             >
               Abandonner
+          </Button>
+          : <Button 
+            size={"2"} 
+            onClick={() => {if (audio) startAudio(audio,true)}}
+            >
+              Réessayer
           </Button>
 }
         </Flex>
@@ -307,7 +364,7 @@ const AudioPlayer: React.FunctionComponent<{
               onChange={addFile}
               id="audioFileInput"
               accept="audio/*" />
-              <label rel="audioFileInput">{music ? win !== null ? "Nouvelle musique" : "Remplacer la musique" : "Envoyer un fichier"}</label>
+              <label className="audio-label" rel="audioFileInput">{music ? win !== null ? "Nouvelle musique" : "Remplacer la musique" : "Envoyer un fichier"}</label>
           </Box> 
           {music && <Box className="custom-audio-upload">
             <input 
@@ -316,7 +373,7 @@ const AudioPlayer: React.FunctionComponent<{
               onChange={addNextFile}
               id="audioFileInput"
               accept="audio/*" />
-              <label rel="audioFileInput">Jouer juste après</label>
+              <label className="audio-label" rel="audioFileInput">Jouer juste après</label>
           </Box>} 
           {music && <Box className="custom-audio-upload">
             <input 
@@ -325,8 +382,61 @@ const AudioPlayer: React.FunctionComponent<{
               onChange={addLastFile}
               id="audioFileInput"
               accept="audio/*" />
-              <label rel="audioFileInput">Ajouter à la playlist</label>
+              <label className="audio-label" rel="audioFileInput">Ajouter à la playlist</label>
           </Box>} 
+        </Flex>
+        <Flex gap={"2"} direction={{initial:"column",sm:"row"}} align={"center"}>  
+          <Popover.Root>
+              <Popover.Trigger>
+                <Box className="custom-audio-upload">
+                  <Text className="audio-label">Ajouter depuis YouTube</Text>
+                </Box>
+              </Popover.Trigger>
+              <Popover.Content>
+                  <TextField.Root>
+                      <TextField.Input
+                       placeholder='https://www.youtube.com/watch?v='
+                       type="text"
+                       value={url}
+                       onChange={handleUrlChange}
+                       />
+                  </TextField.Root>
+                  <Flex direction={"column"}>
+                    <Text size={"2"} style={{fontStyle:'italic',padding:"0.5rem"}}>{`${youtubeError ? "Une erreur est survenue, merci de réessayer" : "Entre un lien YouTube pour jouer cette chanson"}`}</Text>
+                    <Flex direction={"row"} justify={"between"}>
+                      <Button onClick={() => {
+                        fetchYoutube(url).then((res) => {
+                          if (res) setAudio(res)
+                        })
+                        }}>
+                        Jouer
+                      </Button>
+                      <Button onClick={() => {
+                        fetchYoutube(url).then((res) => {
+                          if (res) {
+                            let nextAudioFiles = [res].concat(audioFiles)
+                            setAudioFiles(nextAudioFiles)
+                            if (win == null) preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)                  
+                          }
+                        })
+                        }}>
+                        Jouer après
+                      </Button>
+                      <Button onClick={() => {
+                        fetchYoutube(url).then((res) => {
+                          if (res) {
+                            let nextAudioFiles = audioFiles.concat([res])
+                            setAudioFiles(nextAudioFiles)
+                            if (win == null) preloadNextSong(nextAudioFiles.length != 0 ? nextAudioFiles[0] : null)                  
+                          }
+                        })
+                        }}>
+                        Jouer à la fin
+                      </Button>
+                    </Flex>
+                  </Flex>
+              </Popover.Content>
+          </Popover.Root> 
         </Flex>
         <Flex gap={"2"} direction={{initial:"column",sm:"row"}} align={"center"}>
           <HowToPlay />

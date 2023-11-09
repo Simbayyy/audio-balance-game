@@ -7,8 +7,9 @@ export const Counter: React.FunctionComponent<
         win:"win" | "lose" | null
         setWin:React.Dispatch<React.SetStateAction<"win" | "lose" | null>>
         time:number
+        pause:string
         setTime:React.Dispatch<React.SetStateAction<number>>
-    }> = ({initTime,win,setWin,time,setTime}) => {
+    }> = ({initTime,win,setWin,time,setTime,pause}) => {
 
     useEffect(() => {
         setTime(initTime)
@@ -16,7 +17,7 @@ export const Counter: React.FunctionComponent<
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (win === null) time > 0 && setTime(time-1)
+            if (win === null && pause === "Pause") time > 0 && setTime(time-1)
             if (time === 1) setWin('lose')
         }, 1000)
         return () => clearInterval(interval);
