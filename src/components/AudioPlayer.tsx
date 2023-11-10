@@ -8,7 +8,7 @@ import { HowToPlay } from "./HowToPlay";
 import { Playlist } from "./Playlist";
 import { FreeMusic } from "./FreeMusic";
 import { ProgressBar } from "./ProgressBar";
-import { Score } from "./Page";
+import { Difficulty, DifficultyKey, Score, difficulties } from "./Page";
 import { useMediaQuery } from 'react-responsive'
 
 const AudioContext = window.AudioContext;
@@ -21,13 +21,15 @@ const AudioPlayer: React.FunctionComponent<{
   setAudioFiles: React.Dispatch<React.SetStateAction<File[]>>
   scoreList: Score[]
   setScoreList: React.Dispatch<React.SetStateAction<Score[]>>
+  difficulty: DifficultyKey
 }> = ({
   audio,
   audioFiles,
   setAudio,
   setAudioFiles,
   scoreList,
-  setScoreList
+  setScoreList,
+  difficulty
 }) => {
   const [buttonName, setButtonName] = useState("Jouer");
   const [pitchShift, setPitchShift] = useState(0);
@@ -45,6 +47,7 @@ const AudioPlayer: React.FunctionComponent<{
   const [progress, setProgress] = useState<'hidden' | 'started' | 'ended' >('hidden');
   const [url, setUrl] = useState('');
   const [youtubeError, setYoutubeError] = useState(false);
+  const [diffParams, setDiffParams] = useState<Difficulty>(difficulties[difficulty]);
   const buttonNameRef = useRef('Jouer')
   const isDesktop = useMediaQuery({
     query: '(min-width:1024px)'
@@ -78,6 +81,12 @@ const AudioPlayer: React.FunctionComponent<{
     }
   }, [audioFiles])
 
+  useEffect(() => {
+    if (win !== null || title === "Bienvenue ! Lance un fichier son pour commencer") {
+      setDiffParams(difficulties[difficulty])
+    }
+  }, [difficulty])
+
   const startAudio = async (audio:File, refresh=false) => {
     clearTimeout(nextSongTimeout)
     isLoading = true
@@ -107,6 +116,8 @@ const AudioPlayer: React.FunctionComponent<{
       preloadNextSong(audioFiles.length != 0 ? audioFiles[0] : null)
     }
     if (loadingMusic) {
+        let newDiffParams = difficulties[difficulty]
+        setDiffParams(newDiffParams)
         setPitchShift(0)
         setTempoShift(0)
         if (music) music.dispose()
@@ -114,9 +125,9 @@ const AudioPlayer: React.FunctionComponent<{
         loadingMusic.loopEnd = loadingMusic.buffer.duration
         loadingMusic.loopStart = 0
         loadingMusic.loop = true
-        let newBasePitch = Math.floor(Math.random() * 11 - 5) 
+        let newBasePitch = Math.floor(Math.random() * (newDiffParams.pitchStepNumber + 1) - newDiffParams.pitchStepNumber / 2) 
         setBasePitch(newBasePitch)
-        let newBaseTempo = Math.floor(Math.random() * 11 - 5) 
+        let newBaseTempo = Math.floor(Math.random() * (newDiffParams.tempoStepNumber + 1) - newDiffParams.tempoStepNumber / 2) 
         setBaseTempo(newBaseTempo)
         if (Math.floor(loadingMusic.buffer.duration) === musicTime) {
           setMusicTime(musicTime + 1)
@@ -127,13 +138,13 @@ const AudioPlayer: React.FunctionComponent<{
         setTitle(`En écoute : ${audio.name}`)
         setAttempts(0)
         setScore(0)
-        loadingMusic.detune = 1 + (newBasePitch + pitchShift) * 100
+        loadingMusic.detune = 1 + (newBasePitch + pitchShift) * newDiffParams.pitchStep
         loadingMusic.sync().start()
         Transport.start()
         setTimeout(() => {
           if (buttonNameRef.current = 'Pause') Transport.start()
         }, 100)
-        loadingMusic.playbackRate = 0.999 * 0.95**(-newBaseTempo-tempoShift)
+        loadingMusic.playbackRate = 0.999 * newDiffParams.tempoStep**(-newBaseTempo-tempoShift)
         setMusic(loadingMusic)
         setButtonName("Pause");
         buttonNameRef.current = 'Pause'
@@ -214,6 +225,7 @@ const AudioPlayer: React.FunctionComponent<{
           let nextAudioFiles = audioFiles.concat(filesToAdd)
           setAudioFiles(nextAudioFiles)
           setNextMusic(null)
+          setTitle("Chargement")
         }
     }
   };
@@ -306,11 +318,11 @@ const AudioPlayer: React.FunctionComponent<{
   } 
 
   useEffect(() => {
-    if (music) music.detune = 1 + (basePitch + pitchShift) * 100
+    if (music) music.detune = 1 + (basePitch + pitchShift) * diffParams.pitchStep
   }, [pitchShift])
 
   useEffect(() => {
-    if (music) music.playbackRate = 0.999 * 0.95**(-baseTempo-tempoShift)
+    if (music) music.playbackRate = 0.999 * diffParams.tempoStep**(-baseTempo-tempoShift)
   }, [tempoShift])
 
   return (
@@ -324,8 +336,8 @@ const AudioPlayer: React.FunctionComponent<{
             {attempts !== 0 && <Text align={"center"}>{`Essaye encore ! Déjà ${attempts} essai${attempts != 1 ? 's' :""}`}</Text>}
           </Flex>}
       <Flex direction={"column"} gap={"4"}>
-        <VariableSlider name={"Ton"} maxValue={10} stateVariable={pitchShift} setFunction={win === null ? setPitchShift : null} rightText="Plus aigu" leftText="Plus grave" />
-        <VariableSlider name={"Tempo"} maxValue={10} stateVariable={tempoShift} setFunction={win === null ? setTempoShift : null} rightText="Plus rapide" leftText="Plus lent"/>
+        <VariableSlider name={"Ton"} maxValue={diffParams.pitchStepNumber} stateVariable={pitchShift} setFunction={win === null ? setPitchShift : null} rightText="Plus aigu" leftText="Plus grave" />
+        <VariableSlider name={"Tempo"} maxValue={diffParams.tempoStepNumber} stateVariable={tempoShift} setFunction={win === null ? setTempoShift : null} rightText="Plus rapide" leftText="Plus lent"/>
       </Flex>
       <Flex gap={"2"} align={"center"} direction={"column"}>
         {music && 

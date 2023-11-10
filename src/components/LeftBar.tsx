@@ -1,10 +1,17 @@
-import { Text, Flex, Popover, Button, TextField } from '@radix-ui/themes'
+import { Text, Flex, Popover, Button, TextField, Select, Tooltip, IconButton, HoverCard } from '@radix-ui/themes'
 import * as Toggle from '@radix-ui/react-toggle';
-import { PersonIcon } from '@radix-ui/react-icons'
+import { InfoCircledIcon, PersonIcon } from '@radix-ui/react-icons'
 import { useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
+import { DifficultyKey, difficulties } from './Page';
 
-export const LeftBar = () => {
+export const LeftBar: React.FunctionComponent<{
+    setDifficulty: React.Dispatch<React.SetStateAction<DifficultyKey>>
+    difficulty: DifficultyKey  
+}> = ({
+    setDifficulty,
+    difficulty
+}) => {
     const [text, setText] = useState("Mode sombre")
     const isDesktop = useMediaQuery({
         query: '(min-width:1024px)'
@@ -19,6 +26,9 @@ export const LeftBar = () => {
             document.body.classList.remove('dark-theme')    
         }
     }
+
+    const diffKeys = Object.keys(difficulties) as DifficultyKey[]
+
     return <Flex 
             grow={"0"}
             style={{borderRight:false ? '0.1rem solid grey' : "",height:isDesktop ? "100%" : ""}} 
@@ -45,5 +55,35 @@ export const LeftBar = () => {
                 <Text size={"2"} style={{fontStyle:'italic',paddingTop:"2rem"}}>Choisis un pseudo pour participer au classement</Text>
             </Popover.Content>
         </Popover.Root>}
+        {import.meta.env.VITE_DIFFICULTY === "on" && 
+        <Select.Root 
+            defaultValue={difficulty} 
+            onValueChange={(value) => {
+                console.log("Previous difficulty")
+                setDifficulty(value as DifficultyKey)
+            }}
+            >
+            <Select.Trigger />
+            <Select.Content>
+                <Select.Group>
+                <Select.Label>
+                    <HoverCard.Root>
+                        <HoverCard.Trigger>
+                            <Text>Difficulté</Text>
+                        </HoverCard.Trigger>
+                        <HoverCard.Content>
+                        <Flex>
+                            <Text size={"2"} style={{fontStyle:"italic"}}>La difficulté sera changée au lancement de la prochaine musique</Text>
+                        </Flex>
+                        </HoverCard.Content>
+                    </HoverCard.Root>
+                </Select.Label>
+                {diffKeys.map((elt,index) => {
+                    return <Select.Item key={index} value={elt}>{difficulties[elt].name}</Select.Item>
+                })}
+                </Select.Group>
+            </Select.Content>
+        </Select.Root>
+        }
     </Flex>
 }
