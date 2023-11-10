@@ -17,22 +17,22 @@ export const LeftBar: React.FunctionComponent<{
         query: '(min-width:1024px)'
       })
 
-    const changeTheme = (pressed: boolean) => {
+    const changeTheme = (pressed: boolean, changeMemory=true) => {
         if (pressed) {
             setText('Mode clair')
             document.body.classList.add('dark-theme')
-            localStorage.setItem("theme", "dark")
+            if (changeMemory) localStorage.setItem("theme", "dark")
         } else {
             setText('Mode sombre')
             document.body.classList.remove('dark-theme')    
-            localStorage.setItem("theme", "light")
+            if (changeMemory) localStorage.setItem("theme", "light")
         }
     }
 
     useEffect(() => {
         localStorage.getItem('theme') === 'dark' 
-            ? changeTheme(false)
-            : changeTheme(true)
+            ? changeTheme(false,false)
+            : changeTheme(true,false)
     }, [])
 
     const diffKeys = Object.keys(difficulties) as DifficultyKey[]
