@@ -1,7 +1,7 @@
-import { Text, Flex, Popover, Button, TextField, Select, Tooltip, IconButton, HoverCard } from '@radix-ui/themes'
+import { Text, Flex, Popover, Button, TextField, Select, HoverCard } from '@radix-ui/themes'
 import * as Toggle from '@radix-ui/react-toggle';
-import { InfoCircledIcon, PersonIcon } from '@radix-ui/react-icons'
-import { useState } from 'react'
+import { PersonIcon } from '@radix-ui/react-icons'
+import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { DifficultyKey, difficulties } from './Page';
 
@@ -21,11 +21,19 @@ export const LeftBar: React.FunctionComponent<{
         if (pressed) {
             setText('Mode clair')
             document.body.classList.add('dark-theme')
+            localStorage.setItem("theme", "dark")
         } else {
             setText('Mode sombre')
             document.body.classList.remove('dark-theme')    
+            localStorage.setItem("theme", "light")
         }
     }
+
+    useEffect(() => {
+        localStorage.getItem('theme') === 'dark' 
+            ? changeTheme(false)
+            : changeTheme(true)
+    }, [])
 
     const diffKeys = Object.keys(difficulties) as DifficultyKey[]
 
@@ -38,7 +46,7 @@ export const LeftBar: React.FunctionComponent<{
             py={"2"}
             gap={"1"} 
             direction={{initial:'row',md:"column-reverse"}}>
-        <Toggle.Root className='ToggleGroupItem' onPressedChange={(pressed) => changeTheme(pressed)}>
+        <Toggle.Root className='ToggleGroupItem' defaultPressed={localStorage.getItem('theme') === 'dark'} onPressedChange={(pressed) => changeTheme(pressed)}>
             <Text>{text}</Text>
         </Toggle.Root>
         {import.meta.env.VITE_PSEUDO === "on" && <Popover.Root>
@@ -59,8 +67,8 @@ export const LeftBar: React.FunctionComponent<{
         <Select.Root 
             defaultValue={difficulty} 
             onValueChange={(value) => {
-                console.log("Previous difficulty")
                 setDifficulty(value as DifficultyKey)
+                localStorage.setItem('difficulty', value)
             }}
             >
             <Select.Trigger />

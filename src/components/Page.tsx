@@ -67,7 +67,7 @@ export const Page = () => {
     const [audio, setAudio] = useState<File | null | undefined>();
     const [audioFiles, setAudioFiles] = useState<File[]>([])
     const [scoreList, setScoreList] = useState<Score[]>([])
-    const [difficulty, setDifficulty] = useState<DifficultyKey>('easy')
+    const [difficulty, setDifficulty] = useState<DifficultyKey>(localStorage.getItem('difficulty') as DifficultyKey ?? 'easy')
     const isDesktop = useMediaQuery({
         query: '(min-width:1024px)'
       })
