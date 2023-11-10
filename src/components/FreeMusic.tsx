@@ -45,6 +45,7 @@ export const FreeMusic:React.FunctionComponent<{
             .replace(/.*\//,"")
             .replace(/.mp3/,"")
             .replace(/-[\w\d]+$/, "")
+            .replace(/KevinMcLeod-/,"")
 
         return <Dialog.Close>
             <Button

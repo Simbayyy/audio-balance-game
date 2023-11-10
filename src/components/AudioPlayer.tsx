@@ -259,7 +259,7 @@ const AudioPlayer: React.FunctionComponent<{
         setWin("win")
         let coeffAttempts = Math.exp(-attempts/8)
         let coeffTime = Math.exp(-Math.max(musicTime - time - 10,0)/200)
-        let newScore = Math.floor(990 * coeffAttempts * coeffTime) + 10
+        let newScore = Math.floor((990 * coeffAttempts * coeffTime + 10) * diffParams.scoreMultiplier)
         setScore(newScore)
         let newScoreList = [{
           score:newScore,

@@ -16,6 +16,7 @@ export interface Difficulty {
     pitchStepNumber: number
     tempoStep: number
     tempoStepNumber: number
+    scoreMultiplier: number
 }
 
 export type DifficultyKey = 'easy' | 'medium' | 'hard' | 'impossible'
@@ -33,28 +34,32 @@ export const difficulties: DifficultyMap = {
         pitchStep:300,
         pitchStepNumber:6,
         tempoStep:0.90,
-        tempoStepNumber:6
+        tempoStepNumber:6,
+        scoreMultiplier:0.2
     },
     medium: {
         name:'Moyen',
         pitchStep:200,
         pitchStepNumber:8,
         tempoStep:0.93,
-        tempoStepNumber:8
+        tempoStepNumber:8,
+        scoreMultiplier:0.5
     },
     hard:{
         name:'Difficile',
         pitchStep:100,
         pitchStepNumber:10,
         tempoStep:0.95,
-        tempoStepNumber:10
+        tempoStepNumber:10,
+        scoreMultiplier:1
     },
     impossible:{
         name:"Impossible",
         pitchStep:50,
         pitchStepNumber:12,
         tempoStep:0.96,
-        tempoStepNumber:12
+        tempoStepNumber:12,
+        scoreMultiplier:3
     }
 }
 
