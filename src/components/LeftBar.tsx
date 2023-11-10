@@ -30,7 +30,7 @@ export const LeftBar: React.FunctionComponent<{
     }
 
     useEffect(() => {
-        localStorage.getItem('theme') === 'dark' 
+        localStorage.getItem('theme') === 'light' 
             ? changeTheme(false,false)
             : changeTheme(true,false)
     }, [])
