@@ -44,11 +44,12 @@ const AudioPlayer: React.FunctionComponent<{
   const [score, setScore] = useState(0)
   const [music, setMusic] = useState<GrainPlayer | null>(null)
   const [nextMusic, setNextMusic] = useState<GrainPlayer | null>(null)
-  const [progress, setProgress] = useState<'hidden' | 'started' | 'ended' >('hidden');
   const [url, setUrl] = useState('');
   const [youtubeError, setYoutubeError] = useState(false);
   const [diffParams, setDiffParams] = useState<Difficulty>(difficulties[difficulty]);
   const buttonNameRef = useRef('Jouer')
+  const titleRef = useRef('Bienvenue ! Lance un fichier son pour commencer')
+  const progress = useRef(0)
   const isDesktop = useMediaQuery({
     query: '(min-width:1024px)'
   })
@@ -89,6 +90,25 @@ const AudioPlayer: React.FunctionComponent<{
 
   const startAudio = async (audio:File, refresh=false) => {
     clearTimeout(nextSongTimeout)
+    progress.current = 50
+    setTimeout(() => {if (progress.current === 50) {
+        progress.current = 70
+        titleRef.current += ' '
+        setTitle(titleRef.current)
+      } 
+    }, 1000)
+    setTimeout(() => {if (progress.current === 70) {
+        progress.current = 80
+        titleRef.current += ' '
+        setTitle(titleRef.current)
+      }
+    }, 2000)
+    setTimeout(() => {if (progress.current === 80){
+        progress.current = 90
+        titleRef.current += ' '
+        setTitle(titleRef.current)
+      }
+    }, 5000)    
     isLoading = true
     let reader = new FileReader()
     let loadingMusic: GrainPlayer | null
@@ -97,7 +117,6 @@ const AudioPlayer: React.FunctionComponent<{
       setNextMusic(null)
       preloadNextSong(audioFiles.length != 0 ? audioFiles[0] : null)
     } else {
-      setProgress('started')
       reader.readAsArrayBuffer(audio)
       loadingMusic = await audio.arrayBuffer().then((buffer) => {
         return audioContext.decodeAudioData(buffer)
@@ -111,8 +130,8 @@ const AudioPlayer: React.FunctionComponent<{
         console.error("something went wrong loading file:\n" + `${err}` )
         return null
       })
-      setProgress('ended')
-      setTimeout(() => {setProgress("hidden")}, 1000)
+      progress.current = 100
+      setTimeout(() => {progress.current = 0}, 1000)
       preloadNextSong(audioFiles.length != 0 ? audioFiles[0] : null)
     }
     if (loadingMusic) {
@@ -136,6 +155,7 @@ const AudioPlayer: React.FunctionComponent<{
         }
         setWin(null)
         setTitle(`En écoute : ${audio.name}`)
+        titleRef.current = `En écoute : ${audio.name}`
         setAttempts(0)
         setScore(0)
         loadingMusic.detune = 1 + (newBasePitch + pitchShift) * newDiffParams.pitchStep
@@ -148,6 +168,9 @@ const AudioPlayer: React.FunctionComponent<{
         setMusic(loadingMusic)
         setButtonName("Pause");
         buttonNameRef.current = 'Pause'
+      } else {
+        setTitle(`Une erreur est survenue`)
+        titleRef.current = `Une erreur est survenue`
       }
     isLoading = false
   }
@@ -177,9 +200,11 @@ const AudioPlayer: React.FunctionComponent<{
   useEffect(() => {
     if (win === 'win') {
       setTitle("Félicitations, le son est bien réajusté !")
+      titleRef.current = `Félicitations, le son est bien réajusté !`
     }
     else if (win === 'lose') {
       setTitle("C'est perdu pour cette fois...")
+      titleRef.current = `C'est perdu pour cette fois...`
       setPitchShift(-basePitch)
       setTempoShift(-baseTempo)
     }
@@ -191,7 +216,7 @@ const AudioPlayer: React.FunctionComponent<{
   }, [win])
 
   const nextSong = (force?: boolean) => {
-    if (audioFiles.length !== 0 && !isLoading && (buttonNameRef.current === "Pause" || title === "Bienvenue ! Lance un fichier son pour commencer" || force)) {
+    if (audioFiles.length !== 0 && !isLoading && (buttonNameRef.current === "Pause" || title.match(/Bienvenue/) || force)) {
       let newAudioFiles = audioFiles
       setAudio(newAudioFiles.shift())
       setAudioFiles(newAudioFiles)
@@ -225,7 +250,9 @@ const AudioPlayer: React.FunctionComponent<{
           let nextAudioFiles = audioFiles.concat(filesToAdd)
           setAudioFiles(nextAudioFiles)
           setNextMusic(null)
+          progress.current = 50
           setTitle("Chargement")
+          titleRef.current = "Chargement"
         }
     }
   };
@@ -288,8 +315,31 @@ const AudioPlayer: React.FunctionComponent<{
     setUrl(e.target.value)
   }
 
-  const fetchYoutube = async (url:string) => {
+  const fetchYoutube = async (url:string, updateBar=false) => {
     try {
+      if (updateBar) {
+        progress.current = 10
+        setTimeout(() => {if (progress.current === 10) {
+            progress.current = 30
+            titleRef.current += ' '
+            setTitle(titleRef.current)
+          } 
+        }, 500)
+        setTimeout(() => {if (progress.current === 30) {
+            progress.current = 40
+            titleRef.current += ' '
+            setTitle(titleRef.current)
+          }
+        }, 1000)
+        setTimeout(() => {if (progress.current === 40){
+            progress.current = 45
+            titleRef.current += ' '
+            setTitle(titleRef.current)
+          }
+        }, 5000)    
+        setTitle("Chargement de l'audio...")
+        titleRef.current = "Chargement de l'audio..."
+      } 
       let name:string
       let newAudio = await fetch(`${
         import.meta.env.VITE_ENV === "prod" ? "http://localhost:3000" : ""
@@ -311,6 +361,10 @@ const AudioPlayer: React.FunctionComponent<{
       setYoutubeError(false)
       return newAudio
     } catch (err) {
+      if (title.match(/(Chargement|Bienvenue)/) || win !== null) {
+        setTitle("Une erreur est survenue lors de la récupération de l'audio")
+        titleRef.current = "Une erreur est survenue lors de la récupération de l'audio"
+      } 
       setYoutubeError(true)
       console.error(err)
       return null
@@ -330,8 +384,8 @@ const AudioPlayer: React.FunctionComponent<{
       <Text align={"center"} weight={"bold"}>{title}</Text>
       <Counter initTime={musicTime} pause={buttonNameRef} win={win} setWin={setWin} time={time} setTime={setTime}/>
       {win !== null && <Text size={"6"}>Score : {score}</Text>}
-      {progress !== 'hidden' && <ProgressBar progress={progress} />}
-      {progress === 'hidden' && <Flex gap={"4"} px={"2"} align={"center"}>
+      <ProgressBar progress={progress} />
+      {progress.current === 0 && <Flex gap={"4"} px={"2"} align={"center"}>
             <Button className={win === null ? "" : "button_to_disable_on_win"} onClick={() => checkWin(music)}>Vérifier la réponse</Button>
             {attempts !== 0 && <Text align={"center"}>{`Essaye encore ! Déjà ${attempts} essai${attempts != 1 ? 's' :""}`}</Text>}
           </Flex>}
@@ -422,8 +476,10 @@ const AudioPlayer: React.FunctionComponent<{
                     <Flex direction={"row"} justify={"between"}>
                       <Popover.Close>
                         <Button onClick={() => {
-                          fetchYoutube(url).then((res) => {
+                          fetchYoutube(url, true).then((res) => {
+                            progress.current = 30
                             if (res) setAudio(res)
+                            else progress.current = 0
                           })
                           }}>
                           Jouer
