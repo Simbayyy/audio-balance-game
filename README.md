@@ -1,27 +1,35 @@
-# React + TypeScript + Vite
+# Sonar | Enigme harmonique
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to Sonar | Enigme harmonique, a music distortion game app where users solve musical puzzles by adjusting pitch and tempo.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Upload and play music tracks.
+- Adjust pitch and tempo to solve musical puzzles.
+- Receive feedback on your progress and win the game by restoring the original parameters.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React
+- Tone.js
+- Node/Express
+- Typescript
+- PostgreSQL
 
-- Configure the top-level `parserOptions` property like this:
+## Contributing
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+If you'd like to contribute to the project, follow these steps:
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. Fork the repository.
+2. Create a new branch.
+3. Make your changes and commit.
+4. Push to the branch.
+5. Submit a pull request.
+
+## Contact
+
+For any inquiries or feedback, feel free to reach out:
+
+- Simon Baillet
+- Email: simon.baillet.gomez[at]gmail[dot]com
+- Website: sbaillet.com
